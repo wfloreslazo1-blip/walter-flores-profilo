@@ -246,6 +246,62 @@
   table.edu .edu-org { color: var(--ink-soft); font-size: 0.92rem; }
   table.edu .edu-period { text-align: right; color: var(--ink-faint); font-variant-numeric: tabular-nums; white-space: nowrap; }
 
+  .game-map {
+    background: #10131a;
+    border: 3px solid #05060a;
+    box-shadow: inset 0 0 0 3px #3a4258, 0 8px 24px rgba(0,0,0,0.35);
+    padding: 20px 0 24px;
+    color: #e7e9f0;
+  }
+  .game-hud {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    color: #f2b632;
+    text-transform: uppercase;
+    padding: 0 20px 16px;
+  }
+  .game-track-scroll { overflow-x: auto; padding-bottom: 4px; }
+  .game-track {
+    position: relative;
+    display: flex;
+    gap: 0;
+    padding: 0 24px;
+    min-width: max-content;
+  }
+  .game-track::before {
+    content: "";
+    position: absolute;
+    left: 24px;
+    right: 24px;
+    top: 40px;
+    height: 2px;
+    background-image: repeating-linear-gradient(to right, #3a4258 0 8px, transparent 8px 14px);
+    z-index: 0;
+  }
+  .game-node { position: relative; z-index: 1; width: 148px; flex: 0 0 auto; padding: 0 12px; text-align: center; }
+  .node-icon {
+    width: 40px; height: 40px; margin: 0 auto 10px;
+    background: #1b2030; border: 2px solid #3a4258;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .node-icon svg { width: 20px; height: 20px; color: #f2b632; }
+  .game-node.current .node-icon { border-color: #59c9a5; box-shadow: 0 0 0 3px rgba(89,201,165,0.25); }
+  .game-node.current .node-icon svg { color: #59c9a5; }
+  @media (prefers-reduced-motion: no-preference) {
+    .game-node.current .node-icon { animation: pulse-node 1.8s ease-in-out infinite; }
+  }
+  @keyframes pulse-node {
+    0%, 100% { box-shadow: 0 0 0 3px rgba(89,201,165,0.25); }
+    50% { box-shadow: 0 0 0 6px rgba(89,201,165,0.12); }
+  }
+  .game-node.locked .node-icon { border-style: dashed; opacity: 0.6; }
+  .game-node.locked .node-icon svg { color: #8189a3; }
+  .game-node.locked { opacity: 0.75; }
+  .node-year { font-size: 0.68rem; color: #8189a3; letter-spacing: 0.04em; margin-bottom: 4px; font-variant-numeric: tabular-nums; }
+  .node-title { font-size: 0.76rem; font-weight: 700; letter-spacing: 0.03em; margin-bottom: 6px; line-height: 1.3; }
+  .node-desc { font-size: 0.74rem; color: #b6bccc; line-height: 1.4; }
+
   .roles-grid { display: flex; flex-wrap: wrap; gap: 8px; }
   .role-pill {
     background: var(--gold-soft);
@@ -479,6 +535,74 @@
         <li><b>Germania e Italia</b> — quasi due anni in Germania come ragazzo alla pari, dove ho imparato il tedesco insieme a un bambino di due anni, e soprattutto il valore della parola data e della puntualità. Dall'Italia porto invece l'ospitalità e la capacità di vedere il meglio nelle cose.</li>
         <li><b>Cosa mi rappresenta</b> — se dovessi sceglierne una, sarebbe resilienza: portare a termine i miei obiettivi anche nei momenti di difficoltà, restando coerente con chi sono e con quello che ho cercato di costruire.</li>
       </ul>
+    </section>
+
+    <section class="block">
+      <h2 class="section-title">Il mio percorso</h2>
+      <div class="game-map">
+        <div class="game-hud">▸ Level Select</div>
+        <div class="game-track-scroll">
+          <div class="game-track">
+
+            <div class="game-node">
+              <div class="node-icon"><svg viewBox="0 0 8 8" shape-rendering="crispEdges"><rect x="3" y="2" width="2" height="1" fill="currentColor"/><rect x="2" y="3" width="4" height="2" fill="currentColor"/><rect x="3" y="5" width="2" height="1" fill="currentColor"/><rect x="3" y="6" width="1" height="1" fill="currentColor"/></svg></div>
+              <div class="node-year">2009–11</div>
+              <div class="node-title">GERMANIA</div>
+              <div class="node-desc">Ragazzo alla pari — tedesco, puntualità, parola data.</div>
+            </div>
+
+            <div class="game-node">
+              <div class="node-icon"><svg viewBox="0 0 8 8" shape-rendering="crispEdges"><rect x="3" y="2" width="2" height="1" fill="currentColor"/><rect x="2" y="3" width="4" height="2" fill="currentColor"/><rect x="3" y="5" width="2" height="1" fill="currentColor"/><rect x="3" y="6" width="1" height="1" fill="currentColor"/></svg></div>
+              <div class="node-year">dal 2011</div>
+              <div class="node-title">ITALIA</div>
+              <div class="node-desc">Ospitalità, vedere il meglio nelle cose.</div>
+            </div>
+
+            <div class="game-node">
+              <div class="node-icon"><svg viewBox="0 0 8 8" shape-rendering="crispEdges"><rect x="3" y="1" width="2" height="1" fill="currentColor"/><rect x="2" y="2" width="4" height="1" fill="currentColor"/><rect x="1" y="3" width="6" height="3" fill="currentColor"/><rect x="1" y="6" width="6" height="1" fill="currentColor"/></svg></div>
+              <div class="node-year">2019</div>
+              <div class="node-title">SALES ASSISTANT</div>
+              <div class="node-desc">First Europe Srl — customer care, inside sales.</div>
+            </div>
+
+            <div class="game-node">
+              <div class="node-icon"><svg viewBox="0 0 8 8" shape-rendering="crispEdges"><rect x="3" y="1" width="2" height="1" fill="currentColor"/><rect x="2" y="2" width="4" height="1" fill="currentColor"/><rect x="1" y="3" width="6" height="3" fill="currentColor"/><rect x="1" y="6" width="6" height="1" fill="currentColor"/></svg></div>
+              <div class="node-year">2020</div>
+              <div class="node-title">JUNIOR ADVISOR</div>
+              <div class="node-desc">Studio Paolo Strada — fiscale e societario.</div>
+            </div>
+
+            <div class="game-node">
+              <div class="node-icon"><svg viewBox="0 0 8 8" shape-rendering="crispEdges"><rect x="3" y="1" width="2" height="1" fill="currentColor"/><rect x="2" y="2" width="4" height="1" fill="currentColor"/><rect x="1" y="3" width="6" height="3" fill="currentColor"/><rect x="1" y="6" width="6" height="1" fill="currentColor"/></svg></div>
+              <div class="node-year">2022</div>
+              <div class="node-title">ADVISOR</div>
+              <div class="node-desc">Studio PVC &amp; Associati — consulenza fiscale.</div>
+            </div>
+
+            <div class="game-node">
+              <div class="node-icon"><svg viewBox="0 0 8 8" shape-rendering="crispEdges"><rect x="3" y="0" width="2" height="2" fill="currentColor"/><rect x="1" y="2" width="6" height="1" fill="currentColor"/><rect x="2" y="3" width="4" height="1" fill="currentColor"/><rect x="1" y="4" width="6" height="1" fill="currentColor"/><rect x="1" y="5" width="2" height="1" fill="currentColor"/><rect x="5" y="5" width="2" height="1" fill="currentColor"/><rect x="0" y="6" width="2" height="1" fill="currentColor"/><rect x="6" y="6" width="2" height="1" fill="currentColor"/></svg></div>
+              <div class="node-year">2024</div>
+              <div class="node-title">DOTTORE COMMERCIALISTA</div>
+              <div class="node-desc">Abilitazione conseguita — e Tax Senior in EY.</div>
+            </div>
+
+            <div class="game-node current">
+              <div class="node-icon"><svg viewBox="0 0 8 8" shape-rendering="crispEdges"><rect x="2" y="2" width="4" height="4" fill="currentColor"/><rect x="2" y="1" width="1" height="1" fill="currentColor"/><rect x="5" y="1" width="1" height="1" fill="currentColor"/><rect x="2" y="6" width="1" height="1" fill="currentColor"/><rect x="5" y="6" width="1" height="1" fill="currentColor"/><rect x="1" y="2" width="1" height="1" fill="currentColor"/><rect x="1" y="5" width="1" height="1" fill="currentColor"/><rect x="6" y="2" width="1" height="1" fill="currentColor"/><rect x="6" y="5" width="1" height="1" fill="currentColor"/></svg></div>
+              <div class="node-year">oggi</div>
+              <div class="node-title">AI + SALESFORCE</div>
+              <div class="node-desc">5 certificazioni Anthropic, 25 badge Trailhead.</div>
+            </div>
+
+            <div class="game-node locked">
+              <div class="node-icon"><svg viewBox="0 0 8 8" shape-rendering="crispEdges"><rect x="3" y="0" width="2" height="1" fill="currentColor"/><rect x="2" y="1" width="1" height="2" fill="currentColor"/><rect x="5" y="1" width="1" height="2" fill="currentColor"/><rect x="1" y="3" width="6" height="4" fill="currentColor"/><rect x="3" y="4" width="2" height="2" fill="#1b2030"/></svg></div>
+              <div class="node-year">prossimo</div>
+              <div class="node-title">LIVELLO SUCCESSIVO</div>
+              <div class="node-desc">Si sblocca qui sotto — sezione Direzione ↓</div>
+            </div>
+
+          </div>
+        </div>
+      </div>
     </section>
 
     <section class="block">
