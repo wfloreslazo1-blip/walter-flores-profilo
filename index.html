@@ -350,7 +350,11 @@
   .game-obstacle { position: absolute; top: 58px; width: 16px; height: 16px; z-index: 1; color: #d9646f; }
   .game-obstacle svg { width: 100%; height: 100%; }
   .game-obstacle.cleared { color: #59c9a5; opacity: 0.55; }
-  .game-obstacle.hit { color: #54607a; opacity: 0.5; }
+  .game-obstacle.hit { color: #d9646f; }
+  @keyframes go-flash { 0%, 100% { filter: none; } 50% { filter: brightness(1.7); } }
+  @media (prefers-reduced-motion: no-preference) {
+    .game-obstacle.hit { animation: go-flash 0.3s ease; }
+  }
   .game-hero.no-obstacles .game-obstacle,
   .game-hero.no-obstacles .game-jumpbtn,
   .game-hero.no-obstacles .game-hud.obstacles { display: none; }
@@ -362,6 +366,58 @@
   @media (prefers-reduced-motion: no-preference) {
     .gp-flip.stumble { animation: gp-stumble 0.3s ease; }
   }
+  .game-fail-msg {
+    position: absolute;
+    left: 50%; bottom: 100%;
+    transform: translateX(-50%) translateY(4px);
+    margin-bottom: 8px;
+    background: #d9646f;
+    color: #10131a;
+    font-weight: 700;
+    font-size: 0.7rem;
+    line-height: 1.25;
+    text-align: center;
+    padding: 5px 9px;
+    border-radius: 5px;
+    width: max-content;
+    max-width: 170px;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.15s ease, transform 0.15s ease;
+    z-index: 5;
+  }
+  .game-fail-msg::after {
+    content: "";
+    position: absolute;
+    top: 100%; left: 50%;
+    transform: translateX(-50%);
+    border: 5px solid transparent;
+    border-top-color: #d9646f;
+  }
+  .game-fail-msg.show { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
+  .game-focus-hint {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    z-index: 4; pointer-events: none;
+    transition: opacity 0.2s ease;
+  }
+  .game-focus-hint span {
+    background: rgba(16,19,26,0.92);
+    border: 2px dashed #f2b632;
+    color: #f2b632;
+    font-size: 0.76rem;
+    font-weight: 700;
+    padding: 10px 16px;
+    border-radius: 6px;
+    white-space: nowrap;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .game-focus-hint span { animation: hint-pulse 1.6s ease-in-out infinite; }
+  }
+  @keyframes hint-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+  .game-focus-hint.hidden { opacity: 0; visibility: hidden; }
+  .game-hero.no-obstacles .game-focus-hint span::after { content: " (clicca su una tappa per scoprirla)"; }
 
   .roles-grid { display: flex; flex-wrap: wrap; gap: 8px; }
   .role-pill {
@@ -460,7 +516,7 @@
       <span class="game-hud"><span id="ghud-icon">🚩</span> <span id="gp">0</span>/8 tappe scoperte</span>
       <span class="game-hud obstacles" id="ghud-obstacles">⚡ <span id="go-count">0</span>/3 ostacoli superati</span>
     </div>
-    <p class="game-intro" id="gintro">Muovi il personaggio con ← → e salta con ↑ / Spazio (o i pulsanti / il tocco) per superare gli ostacoli lungo la linea del tempo, oppure clicca direttamente su una tappa per scoprirla.</p>
+    <p class="game-intro" id="gintro">Clicca nell'area di gioco qui sotto per attivare i comandi, poi muoviti con ← → e salta con ↑ / Spazio (o i pulsanti / il tocco) per superare gli ostacoli lungo la linea del tempo — oppure clicca direttamente su una tappa per scoprirla subito.</p>
     <div class="game-track-scroll" id="gts" tabindex="0" role="group" aria-label="Percorso — usa le frecce per muoverti">
       <div class="game-track" id="gt">
         <div class="game-player" id="gplayer">
@@ -474,6 +530,7 @@
               </svg>
             </span>
           </span>
+          <div class="game-fail-msg" id="gfail" aria-live="polite"></div>
         </div>
 
         <div class="game-obstacle" id="go0" data-between="1"><svg viewBox="0 0 8 8" shape-rendering="crispEdges"><rect x="3" y="4" width="2" height="1" fill="currentColor"/><rect x="2" y="5" width="4" height="1" fill="currentColor"/><rect x="1" y="6" width="6" height="1" fill="currentColor"/><rect x="0" y="7" width="8" height="1" fill="currentColor"/></svg></div>
@@ -529,6 +586,7 @@
         </button>
 
       </div>
+      <div class="game-focus-hint" id="ghint" aria-hidden="true"><span>👉 Clicca qui per attivare i comandi da tastiera</span></div>
     </div>
     <div class="game-controls">
       <button type="button" class="game-btn" id="gleft" aria-label="Muovi a sinistra">◀</button>
@@ -812,6 +870,11 @@
   var leftBtn = document.getElementById('gleft');
   var rightBtn = document.getElementById('gright');
   var jumpBtn = document.getElementById('gjump');
+  var failEl = document.getElementById('gfail');
+  var hintEl = document.getElementById('ghint');
+
+  hero.addEventListener('pointerdown', function () { hintEl.classList.add('hidden'); }, { once: true });
+  hero.addEventListener('keydown', function () { hintEl.classList.add('hidden'); }, { once: true });
 
   var nodeX = [];
   var obstacleX = [];
@@ -831,8 +894,16 @@
   var GRAVITY = 2200;
   var JUMP_V = 420;
   var CLEAR_HEIGHT = 20;
-  var obstacleState = obstacles.map(function () { return 0; }); // 0 pending, 1 cleared, 2 hit
+  var obstacleState = obstacles.map(function () { return 0; }); // 0 pending, 1 cleared
   var obstaclesCleared = 0;
+  var OB_HALF = 8;
+  var wallBlocked = obstacles.map(function () { return false; });
+  var failTimer = null;
+  var FAIL_MESSAGES = [
+    'Nooooo, le vecchie abitudini ti hanno fregato! 😅',
+    'Ahi! Un ostacolo della vita ti ha bloccato — salta per superarlo',
+    'Ti sei fatto fregare di nuovo — salta la prossima volta! 🦘'
+  ];
   var visited = nodes.map(function () { return false; });
   var activeDialogIndex = -1;
   var dir = 0;
@@ -856,19 +927,54 @@
   function checkObstacles() {
     obstacleX.forEach(function (x, i) {
       if (obstacleState[i] !== 0) return;
-      if (Math.abs(playerX - x) < 10) {
-        if (playerY > CLEAR_HEIGHT) {
-          obstacleState[i] = 1;
-          obstacles[i].classList.add('cleared');
-          obstaclesCleared++;
-          obCountEl.textContent = obstaclesCleared;
-        } else {
-          obstacleState[i] = 2;
-          obstacles[i].classList.add('hit');
-          stumble();
-        }
+      if (playerY > CLEAR_HEIGHT && Math.abs(playerX - x) < 10) {
+        obstacleState[i] = 1;
+        obstacles[i].classList.remove('hit');
+        obstacles[i].classList.add('cleared');
+        wallBlocked[i] = false;
+        obstaclesCleared++;
+        obCountEl.textContent = obstaclesCleared;
       }
     });
+  }
+
+  function showFail(msg) {
+    failEl.textContent = msg;
+    failEl.classList.add('show');
+    clearTimeout(failTimer);
+    failTimer = setTimeout(function () { failEl.classList.remove('show'); }, 1600);
+  }
+
+  function blockedFeedback(i) {
+    obstacles[i].classList.add('hit');
+    stumble();
+    showFail(FAIL_MESSAGES[Math.floor(Math.random() * FAIL_MESSAGES.length)]);
+  }
+
+  // Finché l'ostacolo non è stato superato saltando, si comporta come un muro:
+  // blocca l'avanzamento a terra e obbliga il giocatore a saltarci sopra.
+  function applyObstacleWalls(fromX, toX) {
+    if (playerY > CLEAR_HEIGHT) return toX; // in volo abbastanza alto: nessun muro
+    var result = toX;
+    var dirSign = toX > fromX ? 1 : (toX < fromX ? -1 : 0);
+    obstacleX.forEach(function (ox, i) {
+      if (obstacleState[i] === 1) { wallBlocked[i] = false; return; }
+      var blockedNow = false;
+      if (dirSign === 1) {
+        var edgeR = ox - OB_HALF;
+        if (fromX <= edgeR && result > edgeR) { result = edgeR; blockedNow = true; }
+      } else if (dirSign === -1) {
+        var edgeL = ox + OB_HALF;
+        if (fromX >= edgeL && result < edgeL) { result = edgeL; blockedNow = true; }
+      }
+      if (blockedNow) {
+        if (!wallBlocked[i]) { wallBlocked[i] = true; blockedFeedback(i); }
+      } else if (Math.abs(fromX - ox) > 24) {
+        if (wallBlocked[i]) obstacles[i].classList.remove('hit');
+        wallBlocked[i] = false;
+      }
+    });
+    return result;
   }
 
   function jump() {
@@ -955,7 +1061,8 @@
       lastT = t;
       var moved = false;
       if (dir !== 0) {
-        playerX = clamp(playerX + dir * speed * dt, 0, maxX());
+        var desiredX = clamp(playerX + dir * speed * dt, 0, maxX());
+        playerX = applyObstacleWalls(playerX, desiredX);
         moved = true;
       }
       if (isJumping || playerY > 0) {
