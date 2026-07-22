@@ -343,6 +343,22 @@
   .gd-body { padding-right: 20px; }
   .gd-body .node-title { margin-bottom: 4px; }
 
+  .game-obstacle { position: absolute; top: 58px; width: 16px; height: 16px; z-index: 1; color: #d9646f; }
+  .game-obstacle svg { width: 100%; height: 100%; }
+  .game-obstacle.cleared { color: #59c9a5; opacity: 0.55; }
+  .game-obstacle.hit { color: #54607a; opacity: 0.5; }
+  .game-hero.no-obstacles .game-obstacle,
+  .game-hero.no-obstacles .game-jumpbtn,
+  .game-hero.no-obstacles .game-hud.obstacles { display: none; }
+  @keyframes gp-stumble {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-3px); }
+    75% { transform: translateX(3px); }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .gp-flip.stumble { animation: gp-stumble 0.3s ease; }
+  }
+
   .roles-grid { display: flex; flex-wrap: wrap; gap: 8px; }
   .role-pill {
     background: var(--gold-soft);
@@ -416,9 +432,10 @@
   <div class="game-map">
     <div class="game-hero-head">
       <span class="game-hero-title">▸ Il mio percorso</span>
-      <span class="game-hud">🚩 <span id="gp">0</span>/8 tappe scoperte</span>
+      <span class="game-hud"><span id="ghud-icon">🚩</span> <span id="gp">0</span>/8 tappe scoperte</span>
+      <span class="game-hud obstacles" id="ghud-obstacles">⚡ <span id="go-count">0</span>/3 ostacoli superati</span>
     </div>
-    <p class="game-intro" id="gintro">Muovi il personaggio con ← → (o i pulsanti / il tocco) lungo la linea del tempo, oppure clicca direttamente su una tappa per scoprirla.</p>
+    <p class="game-intro" id="gintro">Muovi il personaggio con ← → e salta con ↑ / Spazio (o i pulsanti / il tocco) per superare gli ostacoli lungo la linea del tempo, oppure clicca direttamente su una tappa per scoprirla.</p>
     <div class="game-track-scroll" id="gts" tabindex="0" role="group" aria-label="Percorso — usa le frecce per muoverti">
       <div class="game-track" id="gt">
         <div class="game-player" id="gplayer">
@@ -433,6 +450,10 @@
             </span>
           </span>
         </div>
+
+        <div class="game-obstacle" id="go0" data-between="1"><svg viewBox="0 0 8 8" shape-rendering="crispEdges"><rect x="3" y="4" width="2" height="1" fill="currentColor"/><rect x="2" y="5" width="4" height="1" fill="currentColor"/><rect x="1" y="6" width="6" height="1" fill="currentColor"/><rect x="0" y="7" width="8" height="1" fill="currentColor"/></svg></div>
+        <div class="game-obstacle" id="go1" data-between="3"><svg viewBox="0 0 8 8" shape-rendering="crispEdges"><rect x="3" y="4" width="2" height="1" fill="currentColor"/><rect x="2" y="5" width="4" height="1" fill="currentColor"/><rect x="1" y="6" width="6" height="1" fill="currentColor"/><rect x="0" y="7" width="8" height="1" fill="currentColor"/></svg></div>
+        <div class="game-obstacle" id="go2" data-between="5"><svg viewBox="0 0 8 8" shape-rendering="crispEdges"><rect x="3" y="4" width="2" height="1" fill="currentColor"/><rect x="2" y="5" width="4" height="1" fill="currentColor"/><rect x="1" y="6" width="6" height="1" fill="currentColor"/><rect x="0" y="7" width="8" height="1" fill="currentColor"/></svg></div>
 
         <button type="button" class="game-node" data-year="2009–11" data-title="GERMANIA" data-desc="Ragazzo alla pari — ho imparato il tedesco insieme a un bambino di due anni, e soprattutto il valore della parola data e della puntualità.">
           <div class="node-icon"><svg viewBox="0 0 8 8" shape-rendering="crispEdges"><rect x="3" y="2" width="2" height="1" fill="currentColor"/><rect x="2" y="3" width="4" height="2" fill="currentColor"/><rect x="3" y="5" width="2" height="1" fill="currentColor"/><rect x="3" y="6" width="1" height="1" fill="currentColor"/></svg></div>
@@ -486,6 +507,7 @@
     </div>
     <div class="game-controls">
       <button type="button" class="game-btn" id="gleft" aria-label="Muovi a sinistra">◀</button>
+      <button type="button" class="game-btn game-jumpbtn" id="gjump" aria-label="Salta">⬆</button>
       <button type="button" class="game-btn" id="gright" aria-label="Muovi a destra">▶</button>
     </div>
     <div class="game-dialog" id="gdialog" hidden aria-live="polite">
@@ -721,13 +743,17 @@
 <script>
 (function () {
   var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var hero = document.querySelector('.game-hero');
   var scroller = document.getElementById('gts');
   var track = document.getElementById('gt');
   var player = document.getElementById('gplayer');
   var flip = document.getElementById('gflip');
   var bounce = document.getElementById('gbounce');
   var nodes = Array.prototype.slice.call(track.querySelectorAll('.game-node'));
+  var obstacles = Array.prototype.slice.call(track.querySelectorAll('.game-obstacle'));
   var progressEl = document.getElementById('gp');
+  var hudIconEl = document.getElementById('ghud-icon');
+  var obCountEl = document.getElementById('go-count');
   var introEl = document.getElementById('gintro');
   var dialog = document.getElementById('gdialog');
   var dYear = document.getElementById('gdyear');
@@ -737,13 +763,28 @@
   var closeBtn = document.getElementById('gdclose');
   var leftBtn = document.getElementById('gleft');
   var rightBtn = document.getElementById('gright');
+  var jumpBtn = document.getElementById('gjump');
 
   var nodeX = [];
+  var obstacleX = [];
   function measure() {
     nodeX = nodes.map(function (n) { return n.offsetLeft + n.offsetWidth / 2; });
+    obstacleX = obstacles.map(function (o) {
+      var i = parseInt(o.dataset.between, 10);
+      return (nodeX[i - 1] + nodeX[i]) / 2;
+    });
+    obstacles.forEach(function (o, i) { o.style.left = (obstacleX[i] - 8) + 'px'; });
   }
 
   var playerX = 0;
+  var playerY = 0;
+  var velY = 0;
+  var isJumping = false;
+  var GRAVITY = 2200;
+  var JUMP_V = 420;
+  var CLEAR_HEIGHT = 20;
+  var obstacleState = obstacles.map(function () { return 0; }); // 0 pending, 1 cleared, 2 hit
+  var obstaclesCleared = 0;
   var visited = nodes.map(function () { return false; });
   var activeDialogIndex = -1;
   var dir = 0;
@@ -753,8 +794,39 @@
 
   function setPlayerVisual(facing) {
     player.style.left = (playerX - 14) + 'px';
+    player.style.transform = 'translateY(' + (-playerY) + 'px)';
     if (facing === -1) flip.classList.add('face-left');
     else if (facing === 1) flip.classList.remove('face-left');
+  }
+
+  function stumble() {
+    flip.classList.remove('stumble');
+    void flip.offsetWidth;
+    flip.classList.add('stumble');
+  }
+
+  function checkObstacles() {
+    obstacleX.forEach(function (x, i) {
+      if (obstacleState[i] !== 0) return;
+      if (Math.abs(playerX - x) < 10) {
+        if (playerY > CLEAR_HEIGHT) {
+          obstacleState[i] = 1;
+          obstacles[i].classList.add('cleared');
+          obstaclesCleared++;
+          obCountEl.textContent = obstaclesCleared;
+        } else {
+          obstacleState[i] = 2;
+          obstacles[i].classList.add('hit');
+          stumble();
+        }
+      }
+    });
+  }
+
+  function jump() {
+    if (reduced || isJumping) return;
+    isJumping = true;
+    velY = JUMP_V;
   }
 
   function autoScroll() {
@@ -784,7 +856,8 @@
       var count = visited.filter(Boolean).length;
       progressEl.textContent = count;
       if (count === nodes.length) {
-        introEl.textContent = 'Hai scoperto tutte le tappe — continua a leggere qui sotto ↓';
+        introEl.textContent = 'Hai completato il percorso — continua a leggere qui sotto ↓';
+        hudIconEl.textContent = '🏆';
       }
     }
     openDialog(i);
@@ -812,6 +885,7 @@
   });
 
   if (reduced) {
+    hero.classList.add('no-obstacles');
     function step(d) {
       playerX = clamp(playerX + d * 100, 0, maxX());
       setPlayerVisual(d);
@@ -829,17 +903,26 @@
     var lastT = null;
     function loop(t) {
       if (lastT == null) lastT = t;
-      var dt = (t - lastT) / 1000;
+      var dt = Math.min((t - lastT) / 1000, 0.05);
       lastT = t;
+      var moved = false;
       if (dir !== 0) {
         playerX = clamp(playerX + dir * speed * dt, 0, maxX());
-        setPlayerVisual(dir);
+        moved = true;
+      }
+      if (isJumping || playerY > 0) {
+        velY -= GRAVITY * dt;
+        playerY += velY * dt;
+        if (playerY <= 0) { playerY = 0; velY = 0; isJumping = false; }
+        moved = true;
+      }
+      if (moved) {
+        setPlayerVisual(dir !== 0 ? dir : undefined);
         autoScroll();
         updateHere();
-        bounce.classList.add('walking');
-      } else {
-        bounce.classList.remove('walking');
+        checkObstacles();
       }
+      bounce.classList.toggle('walking', dir !== 0);
       requestAnimationFrame(loop);
     }
     requestAnimationFrame(loop);
@@ -848,6 +931,7 @@
     scroller.addEventListener('keydown', function (e) {
       if (e.key === 'ArrowLeft') { setDir(-1); e.preventDefault(); }
       else if (e.key === 'ArrowRight') { setDir(1); e.preventDefault(); }
+      else if (e.key === 'ArrowUp' || e.key === ' ') { jump(); e.preventDefault(); }
     });
     scroller.addEventListener('keyup', function (e) {
       if (e.key === 'ArrowLeft' && dir === -1) setDir(0);
@@ -866,6 +950,7 @@
     }
     bindHold(leftBtn, -1);
     bindHold(rightBtn, 1);
+    jumpBtn.addEventListener('pointerdown', function (e) { e.preventDefault(); jump(); });
   }
 
   measure();
