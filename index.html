@@ -405,12 +405,32 @@
     font-style: italic;
   }
 
+  .welcome-toast {
+    position: fixed; z-index: 50; bottom: 20px; right: 20px; max-width: 320px;
+    background: var(--bg-raised); border: 1px solid var(--line); border-radius: 12px;
+    box-shadow: var(--shadow); padding: 16px 40px 16px 16px;
+    font-size: 0.88rem; color: var(--ink-soft); line-height: 1.45;
+    opacity: 0; transform: translateY(12px); pointer-events: none;
+    transition: opacity 0.35s ease, transform 0.35s ease;
+  }
+  .welcome-toast.show { opacity: 1; transform: translateY(0); pointer-events: auto; }
+  .welcome-toast strong { color: var(--ink); }
+  .wt-close {
+    position: absolute; top: 8px; right: 8px; width: 26px; height: 26px;
+    background: none; border: none; color: var(--ink-faint); font-size: 1rem; cursor: pointer; line-height: 1;
+  }
+  .wt-close:hover, .wt-close:focus-visible { color: var(--ink); }
+  @media (prefers-reduced-motion: reduce) {
+    .welcome-toast { transition: opacity 0.2s ease; transform: none; }
+  }
+
   @media (max-width: 760px) {
     main { grid-template-columns: 1fr; gap: 32px; }
     aside.rail { order: 3; }
     aside.rail .rail-card { position: static; }
     .skills-grid { grid-template-columns: 1fr; gap: 20px; }
     .job-head { flex-direction: column; }
+    .welcome-toast { left: 12px; right: 12px; bottom: 12px; max-width: none; }
   }
 </style>
 </head>
@@ -685,6 +705,7 @@
         <li><b>Allenamento e obiettivi</b> — mi alleno regolarmente in palestra e ogni anno mi pongo l'obiettivo di imparare qualcosa di nuovo — la stessa disciplina che porto nel lavoro.</li>
         <li><b>Germania e Italia</b> — quasi due anni in Germania come ragazzo alla pari, dove ho imparato il tedesco insieme a un bambino di due anni, e soprattutto il valore della parola data e della puntualità. Dall'Italia porto invece l'ospitalità e la capacità di vedere il meglio nelle cose.</li>
         <li><b>Cosa mi rappresenta</b> — se dovessi sceglierne una, sarebbe resilienza: portare a termine i miei obiettivi anche nei momenti di difficoltà, restando coerente con chi sono e con quello che ho cercato di costruire.</li>
+        <li><b>Autoapprendimento con l'AI</b> — uso Claude anche fuori dal lavoro: per interrogarmi su quello che sto studiando (libri di finanza, giapponese) e per tenermi aggiornato ogni giorno sulle principali fonti fiscali che seguo (Sole 24 Ore, NT+ Fisco, Eutekne).</li>
       </ul>
     </section>
 
@@ -739,6 +760,28 @@
   Walter Flores — Client Solutions &amp; Advisory Consultant · Tax, Legal-Tech &amp; AI
   <div class="colophon">Questa pagina è stata progettata e pubblicata con Claude (Anthropic) — anche questo fa parte di come uso l'AI nel lavoro quotidiano.</div>
 </footer>
+
+<div class="welcome-toast" id="welcomeToast" role="status" aria-live="polite">
+  <button type="button" class="wt-close" id="wtClose" aria-label="Chiudi">✕</button>
+  👋 <strong>Ciao, benvenuto!</strong> Questa pagina — testi, design e persino il mini-gioco qui sopra — è stata costruita insieme a Claude. Buona esplorazione.
+</div>
+
+<script>
+(function () {
+  var KEY = 'wfl_welcome_seen_v1';
+  var toast = document.getElementById('welcomeToast');
+  if (!toast) return;
+  var seen = false;
+  try { seen = !!localStorage.getItem(KEY); } catch (e) {}
+  if (seen) return;
+  var closeBtn = document.getElementById('wtClose');
+  function hide() { toast.classList.remove('show'); }
+  closeBtn.addEventListener('click', hide);
+  setTimeout(function () { toast.classList.add('show'); }, 900);
+  setTimeout(hide, 9000);
+  try { localStorage.setItem(KEY, '1'); } catch (e) {}
+})();
+</script>
 
 <script>
 (function () {
