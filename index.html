@@ -1,0 +1,522 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Walter Flores — Client Solutions &amp; Advisory Consultant</title>
+<meta name="description" content="Profilo professionale di Walter Flores — Dottore Commercialista, Tax Senior EY, ruoli-ponte tra clienti, organizzazioni e AI applicata.">
+<style>
+  :root {
+    --bg: #f6f4ef;
+    --bg-raised: #ffffff;
+    --ink: #1c211e;
+    --ink-soft: #4b524d;
+    --ink-faint: #7d857f;
+    --line: #dcd7cc;
+    --accent: #1f6f6b;
+    --accent-ink: #0f4a47;
+    --accent-soft: #dff0ee;
+    --gold: #a8783a;
+    --gold-soft: #f3e6d3;
+    --shadow: 0 1px 2px rgba(28,33,30,0.04), 0 6px 20px rgba(28,33,30,0.06);
+    --serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, "Times New Roman", serif;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #141815;
+      --bg-raised: #1b201c;
+      --ink: #ece9e2;
+      --ink-soft: #b9beb7;
+      --ink-faint: #7f877f;
+      --line: #313830;
+      --accent: #52bdb5;
+      --accent-ink: #bdece7;
+      --accent-soft: #1e3634;
+      --gold: #d8a862;
+      --gold-soft: #3a2f1e;
+      --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 10px 30px rgba(0,0,0,0.35);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #141815;
+    --bg-raised: #1b201c;
+    --ink: #ece9e2;
+    --ink-soft: #b9beb7;
+    --ink-faint: #7f877f;
+    --line: #313830;
+    --accent: #52bdb5;
+    --accent-ink: #bdece7;
+    --accent-soft: #1e3634;
+    --gold: #d8a862;
+    --gold-soft: #3a2f1e;
+    --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 10px 30px rgba(0,0,0,0.35);
+  }
+  :root[data-theme="light"] {
+    --bg: #f6f4ef;
+    --bg-raised: #ffffff;
+    --ink: #1c211e;
+    --ink-soft: #4b524d;
+    --ink-faint: #7d857f;
+    --line: #dcd7cc;
+    --accent: #1f6f6b;
+    --accent-ink: #0f4a47;
+    --accent-soft: #dff0ee;
+    --gold: #a8783a;
+    --gold-soft: #f3e6d3;
+    --shadow: 0 1px 2px rgba(28,33,30,0.04), 0 6px 20px rgba(28,33,30,0.06);
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .card { transition: transform 0.15s ease, box-shadow 0.15s ease; }
+  }
+
+  .wrap {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0 20px 64px;
+  }
+
+  header.masthead {
+    padding: 56px 20px 40px;
+    border-bottom: 1px solid var(--line);
+  }
+  .masthead-inner {
+    max-width: 960px;
+    margin: 0 auto;
+  }
+  .name {
+    font-family: var(--serif);
+    font-size: clamp(2.1rem, 5vw, 3rem);
+    font-weight: 600;
+    margin: 0 0 6px;
+    letter-spacing: 0.2px;
+    text-wrap: balance;
+  }
+  .tagline {
+    color: var(--accent-ink);
+    background: var(--accent-soft);
+    display: inline-block;
+    padding: 5px 14px;
+    border-radius: 999px;
+    font-size: 0.92rem;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+    margin-bottom: 18px;
+  }
+  .contact-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 18px;
+    color: var(--ink-soft);
+    font-size: 0.95rem;
+    font-variant-numeric: tabular-nums;
+  }
+  .contact-row a { color: inherit; text-decoration: none; border-bottom: 1px solid var(--line); }
+  .contact-row a:hover { border-color: var(--accent); color: var(--accent-ink); }
+
+  main {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 260px;
+    gap: 40px;
+    margin-top: 40px;
+    align-items: start;
+  }
+  .content { min-width: 0; }
+  aside.rail {
+    order: 2;
+  }
+
+  section.block { margin-bottom: 40px; }
+  section.block:last-child { margin-bottom: 0; }
+
+  h2.section-title {
+    font-family: var(--serif);
+    font-size: 1.35rem;
+    font-weight: 600;
+    margin: 0 0 16px;
+    color: var(--ink);
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+  }
+  h2.section-title::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: var(--line);
+  }
+
+  p.profilo { font-size: 1.04rem; color: var(--ink-soft); max-width: 66ch; }
+
+  ul.achievements { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+  ul.achievements li {
+    background: var(--bg-raised);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 14px 16px;
+    box-shadow: var(--shadow);
+  }
+  ul.achievements li b { color: var(--accent-ink); font-weight: 600; }
+
+  .skills-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+  .skills-col h3 {
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ink-faint);
+    margin: 0 0 10px;
+    font-weight: 700;
+  }
+  .skills-col ul { margin: 0; padding-left: 18px; color: var(--ink-soft); }
+  .skills-col li { margin-bottom: 8px; }
+  .skills-col li::marker { color: var(--accent); }
+
+  .langs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .lang-chip {
+    background: var(--bg-raised);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 8px 14px;
+    font-size: 0.92rem;
+    display: flex;
+    gap: 8px;
+    align-items: baseline;
+  }
+  .lang-chip .lvl { color: var(--gold); font-weight: 700; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.03em; }
+
+  .job { position: relative; padding-left: 22px; border-left: 2px solid var(--line); margin-bottom: 30px; }
+  .job:last-child { margin-bottom: 0; }
+  .job::before {
+    content: "";
+    position: absolute;
+    left: -6px; top: 4px;
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: 2px solid var(--bg);
+  }
+  .job-head { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 16px; margin-bottom: 8px; }
+  .job-role { font-weight: 700; font-size: 1.02rem; }
+  .job-org { color: var(--ink-soft); }
+  .job-period { color: var(--ink-faint); font-variant-numeric: tabular-nums; font-size: 0.9rem; white-space: nowrap; }
+  .job ul { margin: 0; padding-left: 18px; color: var(--ink-soft); }
+  .job li { margin-bottom: 6px; }
+  .job li::marker { color: var(--accent); }
+
+  .certs { display: grid; gap: 10px; }
+  .cert-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 14px;
+    background: var(--bg-raised);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    flex-wrap: wrap;
+  }
+  .cert-name { font-weight: 600; }
+  .cert-name .issuer { color: var(--ink-faint); font-weight: 400; }
+  .cert-date { color: var(--gold); font-size: 0.88rem; font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+  table.edu { width: 100%; border-collapse: collapse; }
+  table.edu td { padding: 10px 0; border-bottom: 1px solid var(--line); vertical-align: top; }
+  table.edu tr:last-child td { border-bottom: none; }
+  table.edu .edu-title { font-weight: 600; }
+  table.edu .edu-org { color: var(--ink-soft); font-size: 0.92rem; }
+  table.edu .edu-period { text-align: right; color: var(--ink-faint); font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+  .roles-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+  .role-pill {
+    background: var(--gold-soft);
+    color: var(--gold);
+    border-radius: 999px;
+    padding: 6px 12px;
+    font-size: 0.86rem;
+    font-weight: 600;
+  }
+
+  aside.rail .rail-card {
+    background: var(--bg-raised);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: var(--shadow);
+    position: sticky;
+    top: 24px;
+  }
+  aside.rail h3 {
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ink-faint);
+    margin: 0 0 14px;
+    font-weight: 700;
+  }
+  .rail-fact { display: flex; flex-direction: column; gap: 2px; margin-bottom: 16px; }
+  .rail-fact:last-child { margin-bottom: 0; }
+  .rail-fact .label { font-size: 0.78rem; color: var(--ink-faint); }
+  .rail-fact .value { font-size: 1rem; font-weight: 600; }
+
+  footer {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 32px 20px 40px;
+    color: var(--ink-faint);
+    font-size: 0.85rem;
+    border-top: 1px solid var(--line);
+  }
+
+  @media (max-width: 760px) {
+    main { grid-template-columns: 1fr; gap: 32px; }
+    aside.rail { order: 3; }
+    aside.rail .rail-card { position: static; }
+    .skills-grid { grid-template-columns: 1fr; gap: 20px; }
+    .job-head { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="masthead-inner">
+    <h1 class="name">Walter Flores</h1>
+    <div class="tagline">Client Solutions &amp; Advisory Consultant — Tax, Legal-Tech &amp; AI</div>
+    <div class="contact-row">
+      <span>Milano, IT</span>
+      <a href="tel:+393207004759">320 700 4759</a>
+      <a href="mailto:w.floreslazo1@gmail.com">w.floreslazo1@gmail.com</a>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+<main>
+  <div class="content">
+
+    <section class="block">
+      <h2 class="section-title">Profilo</h2>
+      <p class="profilo">Dottore Commercialista con solida esperienza fiscale e societaria maturata tra studi boutique e Big Four, dove ho affiancato la crescita professionale a un percorso universitario parallelo. Applico l'intelligenza artificiale generativa nel lavoro quotidiano e la porto in ruoli-ponte tra clienti, organizzazioni e team di prodotto/tecnologia, in ambito legal-tech, tax-tech o AI advisory.</p>
+    </section>
+
+    <section class="block">
+      <h2 class="section-title">Risultati chiave</h2>
+      <ul class="achievements">
+        <li><b>Percorso di crescita continuo in 6 anni</b> — da Sales Assistant a Tax Senior in una Big Four (EY), conseguendo l'abilitazione professionale di Dottore Commercialista nel 2024 in parallelo al lavoro a tempo pieno.</li>
+        <li><b>Sviluppo AI applicato in autonomia</b> — 5 certificazioni Anthropic Academy completate al di fuori del proprio ruolo attuale, sull'uso pratico dell'intelligenza artificiale generativa.</li>
+        <li><b>Gestione fiscale multi-cliente end-to-end</b> — portafoglio di circa 20 clienti, con impatto diretto sulla riduzione del carico fiscale grazie a incentivi e agevolazioni individuati.</li>
+      </ul>
+    </section>
+
+    <section class="block">
+      <h2 class="section-title">Competenze</h2>
+      <div class="skills-grid">
+        <div class="skills-col">
+          <h3>Hard skills</h3>
+          <ul>
+            <li>Pianificazione fiscale strategica; contabilità analitica, ordinaria e semplificata.</li>
+            <li>Normativa antiriciclaggio e titolare effettivo.</li>
+            <li>Utilizzo pratico di strumenti di intelligenza artificiale generativa nel lavoro quotidiano (Anthropic Claude, Claude Code) per l'ottimizzazione di processi e ricerche fiscali.</li>
+            <li>Pacchetto Office (Word, Excel, PowerPoint); software gestionali di settore Profis e DATEV.</li>
+          </ul>
+        </div>
+        <div class="skills-col">
+          <h3>Soft skills</h3>
+          <ul>
+            <li>Approccio consulenziale e forte orientamento al cliente.</li>
+            <li>Capacità relazionale, sviluppata nella gestione diretta di privati, PMI e società di capitali.</li>
+            <li>Capacità di tradurre normative e processi tecnici complessi in soluzioni chiare per interlocutori non specialisti.</li>
+            <li>Multilinguismo e comunicazione efficace in contesti multiculturali.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="block">
+      <h2 class="section-title">Lingue</h2>
+      <div class="langs">
+        <div class="lang-chip">Spagnolo <span class="lvl">Lingua madre</span></div>
+        <div class="lang-chip">Italiano <span class="lvl">Lingua madre</span></div>
+        <div class="lang-chip">Inglese <span class="lvl">Avanzato</span></div>
+        <div class="lang-chip">Tedesco <span class="lvl">Avanzato</span></div>
+      </div>
+    </section>
+
+    <section class="block">
+      <h2 class="section-title">Esperienza professionale</h2>
+
+      <div class="job">
+        <div class="job-head">
+          <div><span class="job-role">Tax Senior</span> — <span class="job-org">EY, Milano</span></div>
+          <div class="job-period">2024 – Presente</div>
+        </div>
+        <ul>
+          <li>Punto di riferimento per un portafoglio di circa 20 clienti, prevalentemente grandi società e multinazionali, su fiscalità, compliance e reporting, traducendo normative complesse in soluzioni operative per il cliente.</li>
+          <li>Gestione end-to-end degli adempimenti fiscali periodici (CU, modello 770, IVA, INTRASTAT) in contesti multi-cliente, garantendo precisione e rispetto delle scadenze.</li>
+          <li>Redazione e presentazione delle dichiarazioni fiscali per società di capitali, con focus sull'ottimizzazione fiscale e sulla corretta applicazione delle normative vigenti.</li>
+          <li>Assistenza fiscale e tax audit per società quotate, nell'ambito del portafoglio clienti seguito.</li>
+          <li>Calcolo delle imposte e predisposizione del Modello Redditi e del Modello IRAP per società di capitali.</li>
+          <li>Secondment presso E.ON (2026): fiscalità nel settore energetico, con focus su IVA agevolata e certificati bianchi.</li>
+          <li>Individuazione di incentivi e agevolazioni fiscali con impatto diretto sulla riduzione del carico fiscale dei clienti.</li>
+          <li>Predisposizione di report periodici a supporto della pianificazione fiscale e del processo decisionale aziendale.</li>
+        </ul>
+      </div>
+
+      <div class="job">
+        <div class="job-head">
+          <div><span class="job-role">Advisor</span> — <span class="job-org">Studio PVC &amp; Associati, Milano</span></div>
+          <div class="job-period">2022 – 2024</div>
+        </div>
+        <ul>
+          <li>Consulenza fiscale diretta a privati e PMI, con focus su ottimizzazione della posizione tributaria e conformità normativa.</li>
+          <li>Gestione degli adempimenti antiriciclaggio e titolare effettivo, monitorando le operazioni per prevenire rischi di non conformità.</li>
+          <li>Sviluppo e gestione della contabilità analitica a supporto del controllo di gestione e delle decisioni aziendali.</li>
+          <li>Preparazione e trasmissione delle dichiarazioni dei redditi per persone fisiche e giuridiche.</li>
+        </ul>
+      </div>
+
+      <div class="job">
+        <div class="job-head">
+          <div><span class="job-role">Junior Advisor</span> — <span class="job-org">Studio Paolo Strada, Milano</span></div>
+          <div class="job-period">2020 – 2022</div>
+        </div>
+        <ul>
+          <li>Supporto diretto ai clienti nella scelta e gestione del regime forfettario, semplificando requisiti e vantaggi fiscali.</li>
+          <li>Gestione della contabilità ordinaria e semplificata per aziende di diversi settori.</li>
+          <li>Consulenza societaria su costituzione e gestione di strutture aziendali (statuti, contratti, adempimenti burocratici).</li>
+        </ul>
+      </div>
+
+      <div class="job">
+        <div class="job-head">
+          <div><span class="job-role">Sales Assistant</span> — <span class="job-org">First Europe Srl, Milano</span></div>
+          <div class="job-period">2019 – 2020</div>
+        </div>
+        <ul>
+          <li>Gestione diretta della relazione con i clienti (customer care), risolvendo tempestivamente le criticità e garantendo soddisfazione.</li>
+          <li>Attività di inside sales: identificazione di opportunità commerciali, preparazione di preventivi e gestione delle trattative fino alla chiusura.</li>
+          <li>Coordinamento con fornitori esteri, gestendo ordini e tempistiche di consegna.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="block">
+      <h2 class="section-title">Certificazioni</h2>
+      <div class="certs">
+        <div class="cert-row">
+          <span class="cert-name">Claude 101 <span class="issuer">— Anthropic</span></span>
+          <span class="cert-date">14 luglio 2026</span>
+        </div>
+        <div class="cert-row">
+          <span class="cert-name">Claude Code 101 <span class="issuer">— Anthropic</span></span>
+          <span class="cert-date">14 luglio 2026</span>
+        </div>
+        <div class="cert-row">
+          <span class="cert-name">Claude Platform 101 <span class="issuer">— Anthropic</span></span>
+          <span class="cert-date">14 luglio 2026</span>
+        </div>
+        <div class="cert-row">
+          <span class="cert-name">Introduction to Claude Cowork <span class="issuer">— Anthropic</span></span>
+          <span class="cert-date">18 luglio 2026</span>
+        </div>
+        <div class="cert-row">
+          <span class="cert-name">AI Fluency: Framework &amp; Foundations <span class="issuer">— Anthropic</span></span>
+          <span class="cert-date">18 luglio 2026</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="block">
+      <h2 class="section-title">Formazione</h2>
+      <table class="edu">
+        <tr>
+          <td><span class="edu-title">Dottore Commercialista — Abilitato</span></td>
+          <td class="edu-period">2024</td>
+        </tr>
+        <tr>
+          <td><span class="edu-title">Laurea Magistrale in Direzione e Consulenza Aziendale</span><br><span class="edu-org">Università Cattolica del Sacro Cuore</span></td>
+          <td class="edu-period">2020 – 2022</td>
+        </tr>
+        <tr>
+          <td><span class="edu-title">Laurea Triennale in Economia e Gestione Aziendale</span><br><span class="edu-org">Università Cattolica del Sacro Cuore</span></td>
+          <td class="edu-period">2016 – 2019</td>
+        </tr>
+        <tr>
+          <td><span class="edu-title">Full Costing e Direct Costing</span><br><span class="edu-org">PMI Energy Srl</span></td>
+          <td class="edu-period">2019</td>
+        </tr>
+        <tr>
+          <td><span class="edu-title">Public Speaking</span><br><span class="edu-org">PMI Energy Srl</span></td>
+          <td class="edu-period">2019</td>
+        </tr>
+      </table>
+    </section>
+
+    <section class="block">
+      <h2 class="section-title">Direzione</h2>
+      <p class="profilo">Alla ricerca di un ruolo-ponte tra clienti, organizzazioni e team di prodotto/tecnologia, in ambito legal-tech, tax-tech o AI advisory — per unire l'esperienza fiscale e societaria a una competenza AI applicata quotidianamente al lavoro, oltre le certificazioni.</p>
+      <div class="roles-grid">
+        <span class="role-pill">Client Solutions Consultant</span>
+        <span class="role-pill">Customer Success Manager (Legal/Tax Tech)</span>
+        <span class="role-pill">Implementation Consultant</span>
+        <span class="role-pill">Solutions Consultant</span>
+        <span class="role-pill">AI Adoption/Enablement Consultant</span>
+        <span class="role-pill">Professional Services Consultant</span>
+      </div>
+    </section>
+
+  </div>
+
+  <aside class="rail">
+    <div class="rail-card">
+      <h3>In sintesi</h3>
+      <div class="rail-fact">
+        <span class="label">Ruolo attuale</span>
+        <span class="value">Tax Senior, EY</span>
+      </div>
+      <div class="rail-fact">
+        <span class="label">Esperienza</span>
+        <span class="value">Oltre 6 anni</span>
+      </div>
+      <div class="rail-fact">
+        <span class="label">Certificazioni AI</span>
+        <span class="value">5, Anthropic Academy</span>
+      </div>
+      <div class="rail-fact">
+        <span class="label">Lingue</span>
+        <span class="value">4 (2 madrelingua)</span>
+      </div>
+      <div class="rail-fact">
+        <span class="label">Base</span>
+        <span class="value">Milano, IT</span>
+      </div>
+    </div>
+  </aside>
+</main>
+</div>
+
+<footer>
+  Walter Flores — Client Solutions &amp; Advisory Consultant · Tax, Legal-Tech &amp; AI
+</footer>
+
+</body>
+</html>
