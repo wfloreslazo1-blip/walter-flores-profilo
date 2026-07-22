@@ -259,14 +259,15 @@
     letter-spacing: 0.12em;
     color: #f2b632;
     text-transform: uppercase;
-    padding: 0 20px 16px;
+    font-variant-numeric: tabular-nums;
   }
-  .game-track-scroll { overflow-x: auto; padding-bottom: 4px; }
+  .game-track-scroll { overflow-x: auto; padding-bottom: 4px; -webkit-overflow-scrolling: touch; outline: none; position: relative; }
+  .game-track-scroll:focus-visible { box-shadow: inset 0 0 0 2px #59c9a5; }
   .game-track {
     position: relative;
     display: flex;
     gap: 0;
-    padding: 0 24px;
+    padding: 34px 24px 0;
     min-width: max-content;
   }
   .game-track::before {
@@ -274,19 +275,33 @@
     position: absolute;
     left: 24px;
     right: 24px;
-    top: 40px;
+    top: 74px;
     height: 2px;
     background-image: repeating-linear-gradient(to right, #3a4258 0 8px, transparent 8px 14px);
     z-index: 0;
   }
-  .game-node { position: relative; z-index: 1; width: 148px; flex: 0 0 auto; padding: 0 12px; text-align: center; }
+  .game-player { position: absolute; top: 2px; width: 28px; height: 28px; z-index: 3; color: #f2b632; pointer-events: none; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.5)); will-change: left; }
+  .game-player svg { width: 100%; height: 100%; }
+  .gp-flip, .gp-bounce { display: block; width: 100%; height: 100%; }
+  .gp-flip.face-left { transform: scaleX(-1); }
+  @keyframes gp-bounce { 50% { transform: translateY(-3px); } }
+  @media (prefers-reduced-motion: no-preference) {
+    .gp-bounce.walking { animation: gp-bounce 0.28s steps(2) infinite; }
+  }
+  .game-node {
+    position: relative; z-index: 1; width: 148px; flex: 0 0 auto; padding: 0 12px; text-align: center;
+    background: none; border: none; color: inherit; font-family: inherit; cursor: pointer;
+  }
+  .game-node:focus-visible { outline: 2px solid #59c9a5; outline-offset: 4px; }
   .node-icon {
     width: 40px; height: 40px; margin: 0 auto 10px;
-    background: #1b2030; border: 2px solid #3a4258;
+    background: #1b2030; border: 2px dashed #3a4258;
     display: flex; align-items: center; justify-content: center;
   }
-  .node-icon svg { width: 20px; height: 20px; color: #f2b632; }
-  .game-node.current .node-icon { border-color: #59c9a5; box-shadow: 0 0 0 3px rgba(89,201,165,0.25); }
+  .node-icon svg { width: 20px; height: 20px; color: #626a83; }
+  .game-node.visited .node-icon { border-style: solid; border-color: #3a4258; }
+  .game-node.visited .node-icon svg { color: #f2b632; }
+  .game-node.current .node-icon { border-style: solid; border-color: #59c9a5; box-shadow: 0 0 0 3px rgba(89,201,165,0.25); }
   .game-node.current .node-icon svg { color: #59c9a5; }
   @media (prefers-reduced-motion: no-preference) {
     .game-node.current .node-icon { animation: pulse-node 1.8s ease-in-out infinite; }
@@ -295,12 +310,38 @@
     0%, 100% { box-shadow: 0 0 0 3px rgba(89,201,165,0.25); }
     50% { box-shadow: 0 0 0 6px rgba(89,201,165,0.12); }
   }
-  .game-node.locked .node-icon { border-style: dashed; opacity: 0.6; }
-  .game-node.locked .node-icon svg { color: #8189a3; }
-  .game-node.locked { opacity: 0.75; }
   .node-year { font-size: 0.68rem; color: #8189a3; letter-spacing: 0.04em; margin-bottom: 4px; font-variant-numeric: tabular-nums; }
-  .node-title { font-size: 0.76rem; font-weight: 700; letter-spacing: 0.03em; margin-bottom: 6px; line-height: 1.3; }
+  .node-title { font-size: 0.76rem; font-weight: 700; letter-spacing: 0.03em; line-height: 1.3; }
   .node-desc { font-size: 0.74rem; color: #b6bccc; line-height: 1.4; }
+
+  .game-hero { max-width: 960px; margin: 28px auto 8px; padding: 0 20px; }
+  .game-hero-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding: 16px 20px 0; }
+  .game-hero-title { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.1em; color: #f2b632; text-transform: uppercase; }
+  .game-intro { margin: 8px 20px 14px; font-size: 0.82rem; color: #9aa1b8; max-width: 60ch; }
+  .game-controls { display: flex; justify-content: center; gap: 10px; padding: 14px 20px 4px; }
+  .game-btn {
+    width: 52px; height: 44px; border-radius: 6px;
+    background: #1b2030; border: 2px solid #3a4258; color: #e7e9f0;
+    font-size: 1.1rem; line-height: 1; cursor: pointer; touch-action: none;
+    -webkit-user-select: none; user-select: none;
+  }
+  .game-btn:active { background: #262d42; border-color: #59c9a5; }
+  .game-btn:focus-visible { outline: 2px solid #59c9a5; outline-offset: 2px; }
+  .game-dialog {
+    margin: 0 20px; background: #1b2030; border: 2px solid #3a4258; border-radius: 6px;
+    padding: 14px 16px; display: flex; gap: 14px; align-items: flex-start;
+    position: relative;
+  }
+  .game-dialog[hidden] { display: none; }
+  .gd-close {
+    position: absolute; top: 8px; right: 8px; width: 26px; height: 26px;
+    background: none; border: none; color: #8189a3; font-size: 0.95rem; cursor: pointer; line-height: 1;
+  }
+  .gd-close:hover, .gd-close:focus-visible { color: #e7e9f0; }
+  .gd-icon { width: 36px; height: 36px; flex: 0 0 auto; background: #10131a; border: 2px solid #3a4258; display: flex; align-items: center; justify-content: center; }
+  .gd-icon svg { width: 18px; height: 18px; color: #f2b632; }
+  .gd-body { padding-right: 20px; }
+  .gd-body .node-title { margin-bottom: 4px; }
 
   .roles-grid { display: flex; flex-wrap: wrap; gap: 8px; }
   .role-pill {
@@ -370,6 +411,94 @@
     </div>
   </div>
 </header>
+
+<section class="game-hero" aria-label="Il mio percorso — gioco interattivo">
+  <div class="game-map">
+    <div class="game-hero-head">
+      <span class="game-hero-title">▸ Il mio percorso</span>
+      <span class="game-hud">🚩 <span id="gp">0</span>/8 tappe scoperte</span>
+    </div>
+    <p class="game-intro" id="gintro">Muovi il personaggio con ← → (o i pulsanti / il tocco) lungo la linea del tempo, oppure clicca direttamente su una tappa per scoprirla.</p>
+    <div class="game-track-scroll" id="gts" tabindex="0" role="group" aria-label="Percorso — usa le frecce per muoverti">
+      <div class="game-track" id="gt">
+        <div class="game-player" id="gplayer">
+          <span class="gp-flip" id="gflip">
+            <span class="gp-bounce" id="gbounce">
+              <svg viewBox="0 0 8 8" shape-rendering="crispEdges">
+                <rect x="3" y="0" width="2" height="2" fill="currentColor"/>
+                <rect x="2" y="2" width="4" height="3" fill="currentColor"/>
+                <rect x="3" y="5" width="1" height="2" fill="currentColor"/>
+                <rect x="4" y="5" width="1" height="2" fill="currentColor"/>
+              </svg>
+            </span>
+          </span>
+        </div>
+
+        <button type="button" class="game-node" data-year="2009–11" data-title="GERMANIA" data-desc="Ragazzo alla pari — ho imparato il tedesco insieme a un bambino di due anni, e soprattutto il valore della parola data e della puntualità.">
+          <div class="node-icon"><svg viewBox="0 0 8 8" shape-rendering="crispEdges"><rect x="3" y="2" width="2" height="1" fill="currentColor"/><rect x="2" y="3" width="4" height="2" fill="currentColor"/><rect x="3" y="5" width="2" height="1" fill="currentColor"/><rect x="3" y="6" width="1" height="1" fill="currentColor"/></svg></div>
+          <div class="node-year">2009–11</div>
+          <div class="node-title">GERMANIA</div>
+        </button>
+
+        <button type="button" class="game-node" data-year="dal 2011" data-title="ITALIA" data-desc="Da qui porto l'ospitalità e la capacità di vedere il meglio nelle cose.">
+          <div class="node-icon"><svg viewBox="0 0 8 8" shape-rendering="crispEdges"><rect x="3" y="2" width="2" height="1" fill="currentColor"/><rect x="2" y="3" width="4" height="2" fill="currentColor"/><rect x="3" y="5" width="2" height="1" fill="currentColor"/><rect x="3" y="6" width="1" height="1" fill="currentColor"/></svg></div>
+          <div class="node-year">dal 2011</div>
+          <div class="node-title">ITALIA</div>
+        </button>
+
+        <button type="button" class="game-node" data-year="2019" data-title="SALES ASSISTANT" data-desc="First Europe Srl — customer care, inside sales, coordinamento con fornitori esteri.">
+          <div class="node-icon"><svg viewBox="0 0 8 8" shape-rendering="crispEdges"><rect x="3" y="1" width="2" height="1" fill="currentColor"/><rect x="2" y="2" width="4" height="1" fill="currentColor"/><rect x="1" y="3" width="6" height="3" fill="currentColor"/><rect x="1" y="6" width="6" height="1" fill="currentColor"/></svg></div>
+          <div class="node-year">2019</div>
+          <div class="node-title">SALES ASSISTANT</div>
+        </button>
+
+        <button type="button" class="game-node" data-year="2020" data-title="JUNIOR ADVISOR" data-desc="Studio Paolo Strada — fiscale e societario, regime forfettario, contabilità.">
+          <div class="node-icon"><svg viewBox="0 0 8 8" shape-rendering="crispEdges"><rect x="3" y="1" width="2" height="1" fill="currentColor"/><rect x="2" y="2" width="4" height="1" fill="currentColor"/><rect x="1" y="3" width="6" height="3" fill="currentColor"/><rect x="1" y="6" width="6" height="1" fill="currentColor"/></svg></div>
+          <div class="node-year">2020</div>
+          <div class="node-title">JUNIOR ADVISOR</div>
+        </button>
+
+        <button type="button" class="game-node" data-year="2022" data-title="ADVISOR" data-desc="Studio PVC &amp; Associati — consulenza fiscale a privati e PMI.">
+          <div class="node-icon"><svg viewBox="0 0 8 8" shape-rendering="crispEdges"><rect x="3" y="1" width="2" height="1" fill="currentColor"/><rect x="2" y="2" width="4" height="1" fill="currentColor"/><rect x="1" y="3" width="6" height="3" fill="currentColor"/><rect x="1" y="6" width="6" height="1" fill="currentColor"/></svg></div>
+          <div class="node-year">2022</div>
+          <div class="node-title">ADVISOR</div>
+        </button>
+
+        <button type="button" class="game-node" data-year="2024" data-title="DOTTORE COMMERCIALISTA" data-desc="Abilitazione conseguita in parallelo al lavoro a tempo pieno — e Tax Senior in EY.">
+          <div class="node-icon"><svg viewBox="0 0 8 8" shape-rendering="crispEdges"><rect x="3" y="0" width="2" height="2" fill="currentColor"/><rect x="1" y="2" width="6" height="1" fill="currentColor"/><rect x="2" y="3" width="4" height="1" fill="currentColor"/><rect x="1" y="4" width="6" height="1" fill="currentColor"/><rect x="1" y="5" width="2" height="1" fill="currentColor"/><rect x="5" y="5" width="2" height="1" fill="currentColor"/><rect x="0" y="6" width="2" height="1" fill="currentColor"/><rect x="6" y="6" width="2" height="1" fill="currentColor"/></svg></div>
+          <div class="node-year">2024</div>
+          <div class="node-title">DOTTORE COMMERCIALISTA</div>
+        </button>
+
+        <button type="button" class="game-node" data-year="oggi" data-title="AI + SALESFORCE" data-desc="5 certificazioni Anthropic Academy e 25 badge Salesforce Trailhead, sviluppati in autonomia.">
+          <div class="node-icon"><svg viewBox="0 0 8 8" shape-rendering="crispEdges"><rect x="2" y="2" width="4" height="4" fill="currentColor"/><rect x="2" y="1" width="1" height="1" fill="currentColor"/><rect x="5" y="1" width="1" height="1" fill="currentColor"/><rect x="2" y="6" width="1" height="1" fill="currentColor"/><rect x="5" y="6" width="1" height="1" fill="currentColor"/><rect x="1" y="2" width="1" height="1" fill="currentColor"/><rect x="1" y="5" width="1" height="1" fill="currentColor"/><rect x="6" y="2" width="1" height="1" fill="currentColor"/><rect x="6" y="5" width="1" height="1" fill="currentColor"/></svg></div>
+          <div class="node-year">oggi</div>
+          <div class="node-title">AI + SALESFORCE</div>
+        </button>
+
+        <button type="button" class="game-node" data-year="prossimo" data-title="PROSSIMO CAPITOLO" data-desc="Continua a leggere qui sotto — sezione Direzione — per scoprire cosa cerco ora.">
+          <div class="node-icon"><svg viewBox="0 0 8 8" shape-rendering="crispEdges"><rect x="3" y="0" width="2" height="1" fill="currentColor"/><rect x="2" y="1" width="1" height="2" fill="currentColor"/><rect x="5" y="1" width="1" height="2" fill="currentColor"/><rect x="1" y="3" width="6" height="4" fill="currentColor"/><rect x="3" y="4" width="2" height="2" fill="#1b2030"/></svg></div>
+          <div class="node-year">prossimo</div>
+          <div class="node-title">PROSSIMO CAPITOLO</div>
+        </button>
+
+      </div>
+    </div>
+    <div class="game-controls">
+      <button type="button" class="game-btn" id="gleft" aria-label="Muovi a sinistra">◀</button>
+      <button type="button" class="game-btn" id="gright" aria-label="Muovi a destra">▶</button>
+    </div>
+    <div class="game-dialog" id="gdialog" hidden aria-live="polite">
+      <button type="button" class="gd-close" id="gdclose" aria-label="Chiudi">✕</button>
+      <div class="gd-icon" id="gdicon"></div>
+      <div class="gd-body">
+        <div class="node-year" id="gdyear"></div>
+        <div class="node-title" id="gdtitle"></div>
+        <div class="node-desc" id="gddesc"></div>
+      </div>
+    </div>
+  </div>
+</section>
 
 <div class="wrap">
 <main>
@@ -537,75 +666,7 @@
       </ul>
     </section>
 
-    <section class="block">
-      <h2 class="section-title">Il mio percorso</h2>
-      <div class="game-map">
-        <div class="game-hud">▸ Level Select</div>
-        <div class="game-track-scroll">
-          <div class="game-track">
-
-            <div class="game-node">
-              <div class="node-icon"><svg viewBox="0 0 8 8" shape-rendering="crispEdges"><rect x="3" y="2" width="2" height="1" fill="currentColor"/><rect x="2" y="3" width="4" height="2" fill="currentColor"/><rect x="3" y="5" width="2" height="1" fill="currentColor"/><rect x="3" y="6" width="1" height="1" fill="currentColor"/></svg></div>
-              <div class="node-year">2009–11</div>
-              <div class="node-title">GERMANIA</div>
-              <div class="node-desc">Ragazzo alla pari — tedesco, puntualità, parola data.</div>
-            </div>
-
-            <div class="game-node">
-              <div class="node-icon"><svg viewBox="0 0 8 8" shape-rendering="crispEdges"><rect x="3" y="2" width="2" height="1" fill="currentColor"/><rect x="2" y="3" width="4" height="2" fill="currentColor"/><rect x="3" y="5" width="2" height="1" fill="currentColor"/><rect x="3" y="6" width="1" height="1" fill="currentColor"/></svg></div>
-              <div class="node-year">dal 2011</div>
-              <div class="node-title">ITALIA</div>
-              <div class="node-desc">Ospitalità, vedere il meglio nelle cose.</div>
-            </div>
-
-            <div class="game-node">
-              <div class="node-icon"><svg viewBox="0 0 8 8" shape-rendering="crispEdges"><rect x="3" y="1" width="2" height="1" fill="currentColor"/><rect x="2" y="2" width="4" height="1" fill="currentColor"/><rect x="1" y="3" width="6" height="3" fill="currentColor"/><rect x="1" y="6" width="6" height="1" fill="currentColor"/></svg></div>
-              <div class="node-year">2019</div>
-              <div class="node-title">SALES ASSISTANT</div>
-              <div class="node-desc">First Europe Srl — customer care, inside sales.</div>
-            </div>
-
-            <div class="game-node">
-              <div class="node-icon"><svg viewBox="0 0 8 8" shape-rendering="crispEdges"><rect x="3" y="1" width="2" height="1" fill="currentColor"/><rect x="2" y="2" width="4" height="1" fill="currentColor"/><rect x="1" y="3" width="6" height="3" fill="currentColor"/><rect x="1" y="6" width="6" height="1" fill="currentColor"/></svg></div>
-              <div class="node-year">2020</div>
-              <div class="node-title">JUNIOR ADVISOR</div>
-              <div class="node-desc">Studio Paolo Strada — fiscale e societario.</div>
-            </div>
-
-            <div class="game-node">
-              <div class="node-icon"><svg viewBox="0 0 8 8" shape-rendering="crispEdges"><rect x="3" y="1" width="2" height="1" fill="currentColor"/><rect x="2" y="2" width="4" height="1" fill="currentColor"/><rect x="1" y="3" width="6" height="3" fill="currentColor"/><rect x="1" y="6" width="6" height="1" fill="currentColor"/></svg></div>
-              <div class="node-year">2022</div>
-              <div class="node-title">ADVISOR</div>
-              <div class="node-desc">Studio PVC &amp; Associati — consulenza fiscale.</div>
-            </div>
-
-            <div class="game-node">
-              <div class="node-icon"><svg viewBox="0 0 8 8" shape-rendering="crispEdges"><rect x="3" y="0" width="2" height="2" fill="currentColor"/><rect x="1" y="2" width="6" height="1" fill="currentColor"/><rect x="2" y="3" width="4" height="1" fill="currentColor"/><rect x="1" y="4" width="6" height="1" fill="currentColor"/><rect x="1" y="5" width="2" height="1" fill="currentColor"/><rect x="5" y="5" width="2" height="1" fill="currentColor"/><rect x="0" y="6" width="2" height="1" fill="currentColor"/><rect x="6" y="6" width="2" height="1" fill="currentColor"/></svg></div>
-              <div class="node-year">2024</div>
-              <div class="node-title">DOTTORE COMMERCIALISTA</div>
-              <div class="node-desc">Abilitazione conseguita — e Tax Senior in EY.</div>
-            </div>
-
-            <div class="game-node current">
-              <div class="node-icon"><svg viewBox="0 0 8 8" shape-rendering="crispEdges"><rect x="2" y="2" width="4" height="4" fill="currentColor"/><rect x="2" y="1" width="1" height="1" fill="currentColor"/><rect x="5" y="1" width="1" height="1" fill="currentColor"/><rect x="2" y="6" width="1" height="1" fill="currentColor"/><rect x="5" y="6" width="1" height="1" fill="currentColor"/><rect x="1" y="2" width="1" height="1" fill="currentColor"/><rect x="1" y="5" width="1" height="1" fill="currentColor"/><rect x="6" y="2" width="1" height="1" fill="currentColor"/><rect x="6" y="5" width="1" height="1" fill="currentColor"/></svg></div>
-              <div class="node-year">oggi</div>
-              <div class="node-title">AI + SALESFORCE</div>
-              <div class="node-desc">5 certificazioni Anthropic, 25 badge Trailhead.</div>
-            </div>
-
-            <div class="game-node locked">
-              <div class="node-icon"><svg viewBox="0 0 8 8" shape-rendering="crispEdges"><rect x="3" y="0" width="2" height="1" fill="currentColor"/><rect x="2" y="1" width="1" height="2" fill="currentColor"/><rect x="5" y="1" width="1" height="2" fill="currentColor"/><rect x="1" y="3" width="6" height="4" fill="currentColor"/><rect x="3" y="4" width="2" height="2" fill="#1b2030"/></svg></div>
-              <div class="node-year">prossimo</div>
-              <div class="node-title">LIVELLO SUCCESSIVO</div>
-              <div class="node-desc">Si sblocca qui sotto — sezione Direzione ↓</div>
-            </div>
-
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="block">
+    <section class="block" id="direzione">
       <h2 class="section-title">Direzione</h2>
       <p class="profilo">Alla ricerca di un ruolo-ponte tra clienti, organizzazioni e team di prodotto/tecnologia, in ambito legal-tech, tax-tech o AI advisory — per unire l'esperienza fiscale e societaria a una competenza AI applicata quotidianamente al lavoro, oltre le certificazioni.</p>
       <div class="roles-grid">
@@ -656,6 +717,165 @@
   Walter Flores — Client Solutions &amp; Advisory Consultant · Tax, Legal-Tech &amp; AI
   <div class="colophon">Questa pagina è stata progettata e pubblicata con Claude (Anthropic) — anche questo fa parte di come uso l'AI nel lavoro quotidiano.</div>
 </footer>
+
+<script>
+(function () {
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var scroller = document.getElementById('gts');
+  var track = document.getElementById('gt');
+  var player = document.getElementById('gplayer');
+  var flip = document.getElementById('gflip');
+  var bounce = document.getElementById('gbounce');
+  var nodes = Array.prototype.slice.call(track.querySelectorAll('.game-node'));
+  var progressEl = document.getElementById('gp');
+  var introEl = document.getElementById('gintro');
+  var dialog = document.getElementById('gdialog');
+  var dYear = document.getElementById('gdyear');
+  var dTitle = document.getElementById('gdtitle');
+  var dDesc = document.getElementById('gddesc');
+  var dIcon = document.getElementById('gdicon');
+  var closeBtn = document.getElementById('gdclose');
+  var leftBtn = document.getElementById('gleft');
+  var rightBtn = document.getElementById('gright');
+
+  var nodeX = [];
+  function measure() {
+    nodeX = nodes.map(function (n) { return n.offsetLeft + n.offsetWidth / 2; });
+  }
+
+  var playerX = 0;
+  var visited = nodes.map(function () { return false; });
+  var activeDialogIndex = -1;
+  var dir = 0;
+
+  function clamp(v, min, max) { return Math.max(min, Math.min(max, v)); }
+  function maxX() { return nodeX.length ? nodeX[nodeX.length - 1] : 0; }
+
+  function setPlayerVisual(facing) {
+    player.style.left = (playerX - 14) + 'px';
+    if (facing === -1) flip.classList.add('face-left');
+    else if (facing === 1) flip.classList.remove('face-left');
+  }
+
+  function autoScroll() {
+    var margin = 60;
+    var left = scroller.scrollLeft;
+    var view = scroller.clientWidth;
+    if (playerX - left > view - margin) scroller.scrollLeft = playerX - view + margin;
+    else if (playerX - left < margin) scroller.scrollLeft = Math.max(0, playerX - margin);
+  }
+
+  function openDialog(i) {
+    var n = nodes[i];
+    dYear.textContent = n.dataset.year;
+    dTitle.textContent = n.dataset.title;
+    dDesc.textContent = n.dataset.desc;
+    dIcon.innerHTML = n.querySelector('.node-icon').innerHTML;
+    dialog.hidden = false;
+    activeDialogIndex = i;
+  }
+  function closeDialog() { dialog.hidden = true; activeDialogIndex = -1; }
+  closeBtn.addEventListener('click', closeDialog);
+
+  function reveal(i) {
+    if (!visited[i]) {
+      visited[i] = true;
+      nodes[i].classList.add('visited');
+      var count = visited.filter(Boolean).length;
+      progressEl.textContent = count;
+      if (count === nodes.length) {
+        introEl.textContent = 'Hai scoperto tutte le tappe — continua a leggere qui sotto ↓';
+      }
+    }
+    openDialog(i);
+  }
+
+  function updateHere() {
+    var nearest = -1, best = Infinity;
+    nodeX.forEach(function (x, i) {
+      var d = Math.abs(playerX - x);
+      if (d < best) { best = d; nearest = i; }
+    });
+    nodes.forEach(function (n, i) { n.classList.toggle('current', i === nearest && best < 30); });
+    if (nearest >= 0 && best < 26 && !visited[nearest]) reveal(nearest);
+    if (activeDialogIndex >= 0 && Math.abs(playerX - nodeX[activeDialogIndex]) > 70) closeDialog();
+  }
+
+  nodes.forEach(function (n, i) {
+    n.addEventListener('click', function () {
+      playerX = nodeX[i];
+      setPlayerVisual(playerX < (nodeX[i - 1] || 0) ? -1 : 1);
+      autoScroll();
+      reveal(i);
+      updateHere();
+    });
+  });
+
+  if (reduced) {
+    function step(d) {
+      playerX = clamp(playerX + d * 100, 0, maxX());
+      setPlayerVisual(d);
+      autoScroll();
+      updateHere();
+    }
+    scroller.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowLeft') { step(-1); e.preventDefault(); }
+      else if (e.key === 'ArrowRight') { step(1); e.preventDefault(); }
+    });
+    leftBtn.addEventListener('click', function () { step(-1); });
+    rightBtn.addEventListener('click', function () { step(1); });
+  } else {
+    var speed = 260;
+    var lastT = null;
+    function loop(t) {
+      if (lastT == null) lastT = t;
+      var dt = (t - lastT) / 1000;
+      lastT = t;
+      if (dir !== 0) {
+        playerX = clamp(playerX + dir * speed * dt, 0, maxX());
+        setPlayerVisual(dir);
+        autoScroll();
+        updateHere();
+        bounce.classList.add('walking');
+      } else {
+        bounce.classList.remove('walking');
+      }
+      requestAnimationFrame(loop);
+    }
+    requestAnimationFrame(loop);
+
+    function setDir(d) { dir = d; }
+    scroller.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowLeft') { setDir(-1); e.preventDefault(); }
+      else if (e.key === 'ArrowRight') { setDir(1); e.preventDefault(); }
+    });
+    scroller.addEventListener('keyup', function (e) {
+      if (e.key === 'ArrowLeft' && dir === -1) setDir(0);
+      if (e.key === 'ArrowRight' && dir === 1) setDir(0);
+    });
+    scroller.addEventListener('blur', function () { setDir(0); });
+
+    function bindHold(btn, d) {
+      var active = false;
+      function start(e) { e.preventDefault(); active = true; setDir(d); }
+      function end() { if (active) { active = false; setDir(0); } }
+      btn.addEventListener('pointerdown', start);
+      btn.addEventListener('pointerup', end);
+      btn.addEventListener('pointerleave', end);
+      btn.addEventListener('pointercancel', end);
+    }
+    bindHold(leftBtn, -1);
+    bindHold(rightBtn, 1);
+  }
+
+  measure();
+  window.addEventListener('resize', measure);
+  playerX = nodeX[0] || 0;
+  setPlayerVisual(1);
+  autoScroll();
+  nodes.forEach(function (n, i) { n.classList.toggle('current', i === 0); });
+})();
+</script>
 
 </body>
 </html>
