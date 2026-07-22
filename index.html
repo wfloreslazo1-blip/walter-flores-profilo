@@ -19,6 +19,7 @@
     --gold: #2f5c42;
     --gold-soft: #e1ece5;
     --shadow: 0 2px 4px rgba(30,20,14,0.07), 0 14px 32px rgba(30,20,14,0.11);
+    --shadow-lift: 0 6px 14px rgba(30,20,14,0.10), 0 26px 52px rgba(30,20,14,0.16);
     --serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, "Times New Roman", serif;
     --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   }
@@ -37,6 +38,7 @@
       --gold: #7bc79f;
       --gold-soft: #17301f;
       --shadow: 0 2px 4px rgba(0,0,0,0.4), 0 16px 40px rgba(0,0,0,0.5);
+      --shadow-lift: 0 6px 16px rgba(0,0,0,0.5), 0 26px 60px rgba(0,0,0,0.6);
     }
   }
   :root[data-theme="dark"] {
@@ -52,6 +54,7 @@
     --gold: #7bc79f;
     --gold-soft: #17301f;
     --shadow: 0 2px 4px rgba(0,0,0,0.4), 0 16px 40px rgba(0,0,0,0.5);
+    --shadow-lift: 0 6px 16px rgba(0,0,0,0.5), 0 26px 60px rgba(0,0,0,0.6);
   }
   :root[data-theme="light"] {
     --bg: #f3f0ea;
@@ -66,6 +69,7 @@
     --gold: #2f5c42;
     --gold-soft: #e1ece5;
     --shadow: 0 2px 4px rgba(30,20,14,0.07), 0 14px 32px rgba(30,20,14,0.11);
+    --shadow-lift: 0 6px 14px rgba(30,20,14,0.10), 0 26px 52px rgba(30,20,14,0.16);
   }
 
   * { box-sizing: border-box; }
@@ -160,7 +164,40 @@
     flex: 1;
     height: 1px;
     background: var(--line);
+    transform-origin: left;
+    transform: scaleX(0);
+    transition: transform 0.7s ease;
   }
+  section.block.revealed h2.section-title::after { transform: scaleX(1); }
+
+  .reveal-item {
+    opacity: 0;
+    transform: translateY(14px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+  .reveal-item.revealed { opacity: 1; transform: translateY(0); }
+
+  @media (prefers-reduced-motion: reduce) {
+    h2.section-title::after { transition: none; transform: scaleX(1); }
+    .reveal-item { opacity: 1; transform: none; transition: none; }
+  }
+
+  ul.achievements li,
+  .cert-row,
+  .lang-chip,
+  aside.rail .rail-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  }
+  ul.achievements li:hover,
+  .cert-row:hover,
+  .lang-chip:hover,
+  aside.rail .rail-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-lift);
+    border-color: var(--accent);
+  }
+  .role-pill { transition: transform 0.15s ease, background 0.15s ease, color 0.15s ease; }
+  .role-pill:hover { transform: translateY(-2px); background: var(--gold); color: var(--bg-raised); }
 
   p.profilo { font-size: 1.04rem; color: var(--ink-soft); max-width: 66ch; }
 
@@ -836,6 +873,43 @@
   setTimeout(function () { toast.classList.add('show'); }, 900);
   setTimeout(hide, 9000);
   try { localStorage.setItem(KEY, '1'); } catch (e) {}
+})();
+</script>
+
+<script>
+(function () {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if (!('IntersectionObserver' in window)) return;
+
+  var sections = document.querySelectorAll('main section.block');
+  var sectionObs = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('revealed');
+        sectionObs.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
+  sections.forEach(function (s) { sectionObs.observe(s); });
+
+  var items = document.querySelectorAll('ul.achievements li, .job, .cert-row, .lang-chip, aside.rail .rail-card');
+  var itemObs = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (!entry.isIntersecting) return;
+      var el = entry.target;
+      var siblings = Array.prototype.filter.call(el.parentElement.children, function (c) {
+        return c.classList.contains('reveal-item');
+      });
+      var idx = siblings.indexOf(el);
+      el.style.transitionDelay = (Math.min(idx, 5) * 60) + 'ms';
+      el.classList.add('revealed');
+      itemObs.unobserve(el);
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -30px 0px' });
+  items.forEach(function (el) {
+    el.classList.add('reveal-item');
+    itemObs.observe(el);
+  });
 })();
 </script>
 
