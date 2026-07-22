@@ -7,65 +7,65 @@
 <meta name="description" content="Profilo professionale di Walter Flores — Dottore Commercialista, Tax Senior EY, ruoli-ponte tra clienti, organizzazioni e AI applicata.">
 <style>
   :root {
-    --bg: #f6f4ef;
+    --bg: #eef3f2;
     --bg-raised: #ffffff;
-    --ink: #1c211e;
-    --ink-soft: #4b524d;
-    --ink-faint: #7d857f;
-    --line: #dcd7cc;
-    --accent: #1f6f6b;
-    --accent-ink: #0f4a47;
-    --accent-soft: #dff0ee;
-    --gold: #a8783a;
-    --gold-soft: #f3e6d3;
-    --shadow: 0 1px 2px rgba(28,33,30,0.04), 0 6px 20px rgba(28,33,30,0.06);
+    --ink: #10181a;
+    --ink-soft: #45524e;
+    --ink-faint: #78857f;
+    --line: #d5e0dc;
+    --accent: #0c8a76;
+    --accent-ink: #066354;
+    --accent-soft: #d3f1e9;
+    --gold: #c17a2e;
+    --gold-soft: #fbe7cd;
+    --shadow: 0 2px 4px rgba(10,20,18,0.06), 0 14px 32px rgba(10,20,18,0.10);
     --serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, "Times New Roman", serif;
     --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   }
 
   @media (prefers-color-scheme: dark) {
     :root {
-      --bg: #141815;
-      --bg-raised: #1b201c;
-      --ink: #ece9e2;
-      --ink-soft: #b9beb7;
-      --ink-faint: #7f877f;
-      --line: #313830;
-      --accent: #52bdb5;
-      --accent-ink: #bdece7;
-      --accent-soft: #1e3634;
-      --gold: #d8a862;
-      --gold-soft: #3a2f1e;
-      --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 10px 30px rgba(0,0,0,0.35);
+      --bg: #0d1310;
+      --bg-raised: #16211d;
+      --ink: #eaf2ef;
+      --ink-soft: #adc0ba;
+      --ink-faint: #75857f;
+      --line: #2a3833;
+      --accent: #2bd4ac;
+      --accent-ink: #8ff3d6;
+      --accent-soft: #0f3a30;
+      --gold: #eeab52;
+      --gold-soft: #3d2a12;
+      --shadow: 0 2px 4px rgba(0,0,0,0.35), 0 16px 40px rgba(0,0,0,0.45);
     }
   }
   :root[data-theme="dark"] {
-    --bg: #141815;
-    --bg-raised: #1b201c;
-    --ink: #ece9e2;
-    --ink-soft: #b9beb7;
-    --ink-faint: #7f877f;
-    --line: #313830;
-    --accent: #52bdb5;
-    --accent-ink: #bdece7;
-    --accent-soft: #1e3634;
-    --gold: #d8a862;
-    --gold-soft: #3a2f1e;
-    --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 10px 30px rgba(0,0,0,0.35);
+    --bg: #0d1310;
+    --bg-raised: #16211d;
+    --ink: #eaf2ef;
+    --ink-soft: #adc0ba;
+    --ink-faint: #75857f;
+    --line: #2a3833;
+    --accent: #2bd4ac;
+    --accent-ink: #8ff3d6;
+    --accent-soft: #0f3a30;
+    --gold: #eeab52;
+    --gold-soft: #3d2a12;
+    --shadow: 0 2px 4px rgba(0,0,0,0.35), 0 16px 40px rgba(0,0,0,0.45);
   }
   :root[data-theme="light"] {
-    --bg: #f6f4ef;
+    --bg: #eef3f2;
     --bg-raised: #ffffff;
-    --ink: #1c211e;
-    --ink-soft: #4b524d;
-    --ink-faint: #7d857f;
-    --line: #dcd7cc;
-    --accent: #1f6f6b;
-    --accent-ink: #0f4a47;
-    --accent-soft: #dff0ee;
-    --gold: #a8783a;
-    --gold-soft: #f3e6d3;
-    --shadow: 0 1px 2px rgba(28,33,30,0.04), 0 6px 20px rgba(28,33,30,0.06);
+    --ink: #10181a;
+    --ink-soft: #45524e;
+    --ink-faint: #78857f;
+    --line: #d5e0dc;
+    --accent: #0c8a76;
+    --accent-ink: #066354;
+    --accent-soft: #d3f1e9;
+    --gold: #c17a2e;
+    --gold-soft: #fbe7cd;
+    --shadow: 0 2px 4px rgba(10,20,18,0.06), 0 14px 32px rgba(10,20,18,0.10);
   }
 
   * { box-sizing: border-box; }
@@ -88,6 +88,10 @@
     padding: 0 20px 64px;
   }
 
+  .top-accent {
+    height: 4px;
+    background: linear-gradient(90deg, var(--accent), var(--gold));
+  }
   header.masthead {
     padding: 56px 20px 40px;
     border-bottom: 1px solid var(--line);
@@ -436,6 +440,7 @@
 </head>
 <body>
 
+<div class="top-accent"></div>
 <header class="masthead">
   <div class="masthead-inner">
     <h1 class="name">Walter Flores</h1>
