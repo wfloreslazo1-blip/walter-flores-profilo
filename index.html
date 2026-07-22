@@ -74,6 +74,9 @@
 
   * { box-sizing: border-box; }
   html, body { margin: 0; padding: 0; }
+  @media (prefers-reduced-motion: no-preference) {
+    html { scroll-behavior: smooth; }
+  }
   body {
     background: var(--bg);
     color: var(--ink);
@@ -198,6 +201,32 @@
   }
   .role-pill { transition: transform 0.15s ease, background 0.15s ease, color 0.15s ease; }
   .role-pill:hover { transform: translateY(-2px); background: var(--gold); color: var(--bg-raised); }
+
+  .showcase-intro { margin: -6px 0 16px; }
+  .showcase-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .showcase-card {
+    background: var(--bg-raised); border: 1px solid var(--line); border-radius: 10px;
+    padding: 18px; box-shadow: var(--shadow);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  }
+  .showcase-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lift); border-color: var(--accent); }
+  .showcase-icon {
+    width: 36px; height: 36px; margin-bottom: 12px; border-radius: 8px;
+    background: var(--accent-soft); display: flex; align-items: center; justify-content: center;
+  }
+  .showcase-icon svg { width: 18px; height: 18px; color: var(--accent); }
+  .showcase-title { font-weight: 700; margin-bottom: 6px; }
+  .showcase-desc { font-size: 0.88rem; color: var(--ink-soft); line-height: 1.5; }
+  .showcase-desc a { color: var(--accent-ink); }
+  .showcase-mock {
+    background: var(--bg); border: 1px solid var(--line); border-radius: 8px;
+    padding: 10px 12px; margin: 2px 0 12px; font-size: 0.82rem; line-height: 1.55;
+  }
+  .showcase-line.you { color: var(--ink-faint); }
+  .showcase-line.ai b { color: var(--accent-ink); }
+  @media (max-width: 760px) {
+    .showcase-grid { grid-template-columns: 1fr; }
+  }
 
   p.profilo { font-size: 1.04rem; color: var(--ink-soft); max-width: 66ch; }
 
@@ -539,7 +568,7 @@
   </div>
 </header>
 
-<section class="game-hero" aria-label="Il mio percorso — gioco interattivo">
+<section class="game-hero" id="gioco" aria-label="Il mio percorso — gioco interattivo">
   <div class="game-map">
     <div class="game-hero-head">
       <span class="game-hero-title">▸ Il mio percorso</span>
@@ -802,6 +831,31 @@
       </ul>
     </section>
 
+    <section class="block">
+      <h2 class="section-title">Costruito con Claude</h2>
+      <p class="profilo showcase-intro">Non solo a parole: un piccolo assaggio di cosa vuol dire, per me, lavorare con l'AI.</p>
+      <div class="showcase-grid">
+        <div class="showcase-card">
+          <div class="showcase-icon">
+            <svg viewBox="0 0 8 8" shape-rendering="crispEdges"><rect x="1" y="1" width="6" height="4" fill="currentColor"/><rect x="0" y="5" width="1" height="1" fill="currentColor"/><rect x="7" y="5" width="1" height="1" fill="currentColor"/><rect x="2" y="6" width="1" height="1" fill="currentColor"/><rect x="5" y="6" width="1" height="1" fill="currentColor"/></svg>
+          </div>
+          <div class="showcase-title">Questa pagina</div>
+          <div class="showcase-desc">Testi, struttura e il mini-gioco pixel-art qui sopra — costruiti insieme a Claude, dal primo abbozzo alla fisica del salto. <a href="#gioco">Torna su per giocarci ↑</a></div>
+        </div>
+        <div class="showcase-card">
+          <div class="showcase-icon">
+            <svg viewBox="0 0 8 8" shape-rendering="crispEdges"><rect x="0" y="1" width="8" height="5" fill="currentColor"/><rect x="1" y="7" width="1" height="1" fill="currentColor"/><rect x="2" y="6" width="1" height="1" fill="currentColor"/></svg>
+          </div>
+          <div class="showcase-title">Come studio con l'AI</div>
+          <div class="showcase-mock">
+            <div class="showcase-line you">Tu: fammi una domanda difficile sul capitolo che ho appena letto</div>
+            <div class="showcase-line ai"><b>Claude:</b> qual è la differenza tra regime forfettario e regime ordinario in termini di deducibilità dei costi? Fammi un esempio pratico.</div>
+          </div>
+          <div class="showcase-desc">Un esempio del tipo di domande che mi faccio fare — la stessa abitudine la uso ogni giorno anche per il giapponese.</div>
+        </div>
+      </div>
+    </section>
+
     <section class="block" id="direzione">
       <h2 class="section-title">Direzione</h2>
       <p class="profilo">Alla ricerca di un ruolo-ponte tra clienti, organizzazioni e team di prodotto/tecnologia, in ambito legal-tech, tax-tech o AI advisory — per unire l'esperienza fiscale e societaria a una competenza AI applicata quotidianamente al lavoro, oltre le certificazioni.</p>
@@ -892,7 +946,7 @@
   }, { threshold: 0.15 });
   sections.forEach(function (s) { sectionObs.observe(s); });
 
-  var items = document.querySelectorAll('ul.achievements li, .job, .cert-row, .lang-chip, aside.rail .rail-card');
+  var items = document.querySelectorAll('ul.achievements li, .job, .cert-row, .lang-chip, aside.rail .rail-card, .showcase-card');
   var itemObs = new IntersectionObserver(function (entries) {
     entries.forEach(function (entry) {
       if (!entry.isIntersecting) return;
