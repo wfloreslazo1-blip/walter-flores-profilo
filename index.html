@@ -458,14 +458,14 @@
   }
 
   .welcome-toast {
-    position: fixed; z-index: 50; bottom: 20px; right: 20px; max-width: 320px;
+    position: fixed; z-index: 50; top: 16px; left: 50%; max-width: 360px;
     background: var(--bg-raised); border: 1px solid var(--line); border-radius: 12px;
     box-shadow: var(--shadow); padding: 16px 40px 16px 16px;
     font-size: 0.88rem; color: var(--ink-soft); line-height: 1.45;
-    opacity: 0; transform: translateY(12px); pointer-events: none;
+    opacity: 0; transform: translateX(-50%) translateY(-14px); pointer-events: none;
     transition: opacity 0.35s ease, transform 0.35s ease;
   }
-  .welcome-toast.show { opacity: 1; transform: translateY(0); pointer-events: auto; }
+  .welcome-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); pointer-events: auto; }
   .welcome-toast strong { color: var(--ink); }
   .wt-close {
     position: absolute; top: 8px; right: 8px; width: 26px; height: 26px;
@@ -473,7 +473,7 @@
   }
   .wt-close:hover, .wt-close:focus-visible { color: var(--ink); }
   @media (prefers-reduced-motion: reduce) {
-    .welcome-toast { transition: opacity 0.2s ease; transform: none; }
+    .welcome-toast { transition: opacity 0.2s ease; transform: translateX(-50%); }
   }
 
   @media (max-width: 760px) {
@@ -482,7 +482,8 @@
     aside.rail .rail-card { position: static; }
     .skills-grid { grid-template-columns: 1fr; gap: 20px; }
     .job-head { flex-direction: column; }
-    .welcome-toast { left: 12px; right: 12px; bottom: 12px; max-width: none; }
+    .welcome-toast { left: 12px; right: 12px; top: 12px; max-width: none; transform: translateY(-14px); }
+    .welcome-toast.show { transform: translateY(0); }
   }
 </style>
 </head>
@@ -853,6 +854,7 @@
   var hudIconEl = document.getElementById('ghud-icon');
   var obCountEl = document.getElementById('go-count');
   var introEl = document.getElementById('gintro');
+  var introDefaultText = introEl.textContent;
   var dialog = document.getElementById('gdialog');
   var dYear = document.getElementById('gdyear');
   var dTitle = document.getElementById('gdtitle');
@@ -902,9 +904,12 @@
   var visited = nodes.map(function () { return false; });
   var activeDialogIndex = -1;
   var dir = 0;
+  var completed = false;
+  var lastActivityTime = 0;
 
   function clamp(v, min, max) { return Math.max(min, Math.min(max, v)); }
   function maxX() { return nodeX.length ? nodeX[nodeX.length - 1] : 0; }
+  function bumpActivity() { lastActivityTime = performance.now(); }
 
   function setPlayerVisual(facing) {
     player.style.left = (playerX - 14) + 'px';
@@ -974,6 +979,7 @@
 
   function jump() {
     if (reduced || isJumping) return;
+    bumpActivity();
     isJumping = true;
     velY = JUMP_V;
   }
@@ -987,6 +993,7 @@
   }
 
   function openDialog(i) {
+    bumpActivity();
     var n = nodes[i];
     dYear.textContent = n.dataset.year;
     dTitle.textContent = n.dataset.title;
@@ -1007,9 +1014,31 @@
       if (count === nodes.length) {
         introEl.textContent = 'Hai completato il percorso — continua a leggere qui sotto ↓';
         hudIconEl.textContent = '🏆';
+        completed = true;
       }
     }
     openDialog(i);
+  }
+
+  function resetGame() {
+    closeDialog();
+    visited = nodes.map(function () { return false; });
+    nodes.forEach(function (n) { n.classList.remove('visited', 'current'); });
+    obstacleState = obstacles.map(function () { return 0; });
+    wallBlocked = obstacles.map(function () { return false; });
+    obstacles.forEach(function (o) { o.classList.remove('cleared', 'hit'); });
+    obstaclesCleared = 0;
+    obCountEl.textContent = 0;
+    progressEl.textContent = 0;
+    hudIconEl.textContent = '🚩';
+    introEl.textContent = introDefaultText;
+    completed = false;
+    playerX = nodeX[0] || 0;
+    playerY = 0; velY = 0; isJumping = false; dir = 0;
+    setPlayerVisual(1);
+    scroller.scrollLeft = 0;
+    nodes.forEach(function (n, i) { n.classList.toggle('current', i === 0); });
+    bumpActivity();
   }
 
   function updateHere() {
@@ -1036,6 +1065,7 @@
   if (reduced) {
     hero.classList.add('no-obstacles');
     function step(d) {
+      bumpActivity();
       playerX = clamp(playerX + d * 100, 0, maxX());
       setPlayerVisual(d);
       autoScroll();
@@ -1077,7 +1107,7 @@
     }
     requestAnimationFrame(loop);
 
-    function setDir(d) { dir = d; }
+    function setDir(d) { dir = d; if (d !== 0) bumpActivity(); }
     scroller.addEventListener('keydown', function (e) {
       if (e.key === 'ArrowLeft') { setDir(-1); e.preventDefault(); }
       else if (e.key === 'ArrowRight') { setDir(1); e.preventDefault(); }
@@ -1109,6 +1139,14 @@
   setPlayerVisual(1);
   autoScroll();
   nodes.forEach(function (n, i) { n.classList.toggle('current', i === 0); });
+
+  // "Attract mode": se non c'è nessuno (nessuna interazione) o il percorso è
+  // già stato completato, il gioco si riavvia da solo per il prossimo visitatore.
+  bumpActivity();
+  setInterval(function () {
+    var idleLimit = completed ? 6000 : 60000;
+    if (performance.now() - lastActivityTime > idleLimit) resetGame();
+  }, 2000);
 })();
 </script>
 
