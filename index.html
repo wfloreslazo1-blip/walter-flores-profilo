@@ -102,6 +102,23 @@
   header.masthead {
     padding: 56px 20px 40px;
     border-bottom: 1px solid var(--line);
+    position: relative;
+  }
+  .theme-toggle {
+    position: absolute; top: 18px; right: 20px;
+    width: 36px; height: 36px; padding: 0;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 999px; border: 1px solid var(--line);
+    background: var(--bg-raised); color: var(--ink-soft);
+    cursor: pointer;
+    transition: transform 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+  }
+  .theme-toggle:hover { border-color: var(--accent); color: var(--accent-ink); transform: translateY(-2px); }
+  .theme-toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .theme-toggle svg { width: 17px; height: 17px; }
+  @media (max-width: 480px) {
+    .theme-toggle { top: 14px; right: 14px; width: 32px; height: 32px; }
+    .theme-toggle svg { width: 15px; height: 15px; }
   }
   .masthead-inner {
     max-width: 960px;
@@ -136,6 +153,16 @@
   }
   .contact-row a { color: inherit; text-decoration: none; border-bottom: 1px solid var(--line); }
   .contact-row a:hover { border-color: var(--accent); color: var(--accent-ink); }
+  .copy-email-btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 22px; height: 22px; padding: 0; margin-left: -10px; vertical-align: -6px;
+    border: none; border-radius: 5px; background: transparent; color: var(--ink-faint);
+    cursor: pointer;
+    transition: color 0.15s ease, background 0.15s ease;
+  }
+  .copy-email-btn:hover, .copy-email-btn:focus-visible { color: var(--accent-ink); background: var(--accent-soft); }
+  .copy-email-btn.copied { color: var(--gold); }
+  .copy-email-btn svg { width: 12px; height: 12px; }
 
   main {
     display: grid;
@@ -557,6 +584,7 @@
 
 <div class="top-accent"></div>
 <header class="masthead">
+  <button type="button" class="theme-toggle" id="themeToggle" aria-label="Cambia tema" title="Cambia tema"></button>
   <div class="masthead-inner">
     <h1 class="name">Walter Flores</h1>
     <div class="tagline">Client Solutions &amp; Advisory Consultant — Tax, Legal-Tech &amp; AI</div>
@@ -564,6 +592,9 @@
       <span>Milano, IT</span>
       <a href="tel:+393207004759">320 700 4759</a>
       <a href="mailto:w.floreslazo1@gmail.com">w.floreslazo1@gmail.com</a>
+      <button type="button" class="copy-email-btn" id="copyEmailBtn" aria-label="Copia indirizzo email" title="Copia email">
+        <svg viewBox="0 0 8 8" shape-rendering="crispEdges" aria-hidden="true" focusable="false"><rect x="1" y="1" width="5" height="5" fill="currentColor" opacity="0.45"/><rect x="3" y="3" width="4" height="4" fill="currentColor"/></svg>
+      </button>
     </div>
   </div>
 </header>
@@ -1275,6 +1306,110 @@
     var idleLimit = completed ? 6000 : 60000;
     if (performance.now() - lastActivityTime > idleLimit) resetGame();
   }, 2000);
+})();
+</script>
+
+<script>
+(function () {
+  var KEY = 'wfl_theme';
+  var root = document.documentElement;
+  var btn = document.getElementById('themeToggle');
+  if (!btn) return;
+
+  var SUN = '<svg viewBox="0 0 8 8" shape-rendering="crispEdges" aria-hidden="true" focusable="false">' +
+    '<rect x="2" y="2" width="4" height="4" fill="currentColor"/>' +
+    '<rect x="3" y="0" width="2" height="1" fill="currentColor"/>' +
+    '<rect x="3" y="7" width="2" height="1" fill="currentColor"/>' +
+    '<rect x="0" y="3" width="1" height="2" fill="currentColor"/>' +
+    '<rect x="7" y="3" width="1" height="2" fill="currentColor"/></svg>';
+  var MOON = '<svg viewBox="0 0 8 8" shape-rendering="crispEdges" aria-hidden="true" focusable="false">' +
+    '<rect x="2" y="1" width="4" height="1" fill="currentColor"/>' +
+    '<rect x="1" y="2" width="6" height="4" fill="currentColor"/>' +
+    '<rect x="2" y="6" width="4" height="1" fill="currentColor"/>' +
+    '<rect x="4" y="0" width="3" height="1" style="fill:var(--bg-raised)"/>' +
+    '<rect x="3" y="1" width="4" height="4" style="fill:var(--bg-raised)"/>' +
+    '<rect x="4" y="5" width="3" height="1" style="fill:var(--bg-raised)"/></svg>';
+
+  var mql = null;
+  try { mql = window.matchMedia('(prefers-color-scheme: dark)'); } catch (e) {}
+
+  function storedTheme() {
+    try { return localStorage.getItem(KEY); } catch (e) { return null; }
+  }
+  function effectiveTheme() {
+    var stored = storedTheme();
+    if (stored === 'dark' || stored === 'light') return stored;
+    return (mql && mql.matches) ? 'dark' : 'light';
+  }
+  function updateButton(theme) {
+    if (theme === 'dark') {
+      btn.innerHTML = SUN;
+      btn.setAttribute('aria-label', 'Passa al tema chiaro');
+      btn.title = 'Passa al tema chiaro';
+    } else {
+      btn.innerHTML = MOON;
+      btn.setAttribute('aria-label', 'Passa al tema scuro');
+      btn.title = 'Passa al tema scuro';
+    }
+  }
+  function applyTheme(theme, persist) {
+    root.setAttribute('data-theme', theme);
+    if (persist) {
+      try { localStorage.setItem(KEY, theme); } catch (e) {}
+    }
+    updateButton(theme);
+  }
+
+  applyTheme(effectiveTheme(), false);
+
+  btn.addEventListener('click', function () {
+    var current = root.getAttribute('data-theme') || effectiveTheme();
+    applyTheme(current === 'dark' ? 'light' : 'dark', true);
+  });
+
+  if (mql) {
+    var onSystemChange = function (e) {
+      var stored = storedTheme();
+      if (stored === 'dark' || stored === 'light') return;
+      applyTheme(e.matches ? 'dark' : 'light', false);
+    };
+    try { mql.addEventListener('change', onSystemChange); } catch (e) {
+      try { mql.addListener(onSystemChange); } catch (e2) {}
+    }
+  }
+})();
+</script>
+
+<script>
+(function () {
+  var btn = document.getElementById('copyEmailBtn');
+  if (!btn) return;
+  var email = 'w.floreslazo1@gmail.com';
+  var defaultIcon = btn.innerHTML;
+  var checkIcon = '<svg viewBox="0 0 8 8" shape-rendering="crispEdges" aria-hidden="true" focusable="false">' +
+    '<rect x="1" y="4" width="1" height="1" fill="currentColor"/>' +
+    '<rect x="2" y="5" width="1" height="1" fill="currentColor"/>' +
+    '<rect x="3" y="6" width="1" height="1" fill="currentColor"/>' +
+    '<rect x="4" y="5" width="1" height="1" fill="currentColor"/>' +
+    '<rect x="5" y="4" width="1" height="1" fill="currentColor"/>' +
+    '<rect x="6" y="3" width="1" height="1" fill="currentColor"/>' +
+    '<rect x="7" y="2" width="1" height="1" fill="currentColor"/></svg>';
+  var resetTimer = null;
+
+  btn.addEventListener('click', function () {
+    if (!navigator.clipboard) return;
+    navigator.clipboard.writeText(email).then(function () {
+      btn.innerHTML = checkIcon;
+      btn.classList.add('copied');
+      btn.setAttribute('aria-label', 'Email copiata');
+      clearTimeout(resetTimer);
+      resetTimer = setTimeout(function () {
+        btn.innerHTML = defaultIcon;
+        btn.classList.remove('copied');
+        btn.setAttribute('aria-label', 'Copia indirizzo email');
+      }, 1600);
+    }).catch(function () {});
+  });
 })();
 </script>
 
