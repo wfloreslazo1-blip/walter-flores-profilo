@@ -395,7 +395,7 @@
   table.edu .edu-period { text-align: right; color: var(--ink-faint); font-variant-numeric: tabular-nums; white-space: nowrap; }
 
   .game-map {
-    background: #10131a;
+    background: linear-gradient(180deg, #171c28 0%, #10131a 55%);
     border: 3px solid #05060a;
     box-shadow: inset 0 0 0 3px #3a4258, 0 8px 24px rgba(0,0,0,0.35);
     padding: 20px 0 24px;
@@ -427,6 +427,26 @@
     height: 2px;
     background-image: repeating-linear-gradient(to right, #3a4258 0 8px, transparent 8px 14px);
     z-index: 0;
+  }
+  .game-track::after {
+    content: "";
+    position: absolute;
+    left: 24px;
+    right: 24px;
+    top: 76px;
+    height: 8px;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.28), transparent);
+    z-index: 0;
+  }
+  .game-track-progress {
+    position: absolute;
+    left: 24px;
+    top: 74px;
+    height: 2px;
+    width: 0;
+    background: linear-gradient(to right, #59c9a5, #f2b632);
+    z-index: 0;
+    pointer-events: none;
   }
   .game-player { position: absolute; top: 46px; width: 28px; height: 28px; z-index: 3; color: #f2b632; pointer-events: none; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.5)); will-change: left, transform; }
   .game-player svg { width: 100%; height: 100%; }
@@ -654,12 +674,14 @@
   <div class="game-map">
     <div class="game-hero-head">
       <span class="game-hero-title">▸ Il mio percorso</span>
-      <span class="game-hud"><span id="ghud-icon">🚩</span> <span id="gp">0</span>/8 tappe scoperte</span>
+      <span class="game-hud"><span id="ghud-icon">🚩</span> <span id="gp">0</span>/9 tappe scoperte</span>
       <span class="game-hud obstacles" id="ghud-obstacles">⚡ <span id="go-count">0</span>/3 ostacoli superati</span>
     </div>
     <p class="game-intro" id="gintro">Clicca nell'area di gioco qui sotto per attivare i comandi, poi muoviti con ← → e salta con ↑ / Spazio (o i pulsanti / il tocco) per superare gli ostacoli lungo la linea del tempo — oppure clicca direttamente su una tappa per scoprirla subito.</p>
     <div class="game-track-scroll" id="gts" tabindex="0" role="group" aria-label="Percorso — usa le frecce per muoverti">
       <div class="game-track" id="gt">
+        <div class="game-track-progress" id="gprogress"></div>
+
         <div class="game-player" id="gplayer">
           <span class="gp-flip" id="gflip">
             <span class="gp-bounce" id="gbounce">
@@ -668,14 +690,22 @@
                 <rect x="2" y="2" width="4" height="3" fill="currentColor"/>
                 <rect x="3" y="5" width="1" height="2" fill="currentColor"/>
                 <rect x="4" y="5" width="1" height="2" fill="currentColor"/>
+                <rect x="1" y="3" width="1" height="2" fill="#8b5a3c"/>
+                <rect x="2" y="4" width="4" height="1" fill="rgba(0,0,0,0.18)"/>
               </svg>
             </span>
           </span>
         </div>
 
-        <div class="game-obstacle" id="go0" data-between="1"><svg viewBox="0 0 8 8" shape-rendering="crispEdges"><rect x="3" y="4" width="2" height="1" fill="currentColor"/><rect x="2" y="5" width="4" height="1" fill="currentColor"/><rect x="1" y="6" width="6" height="1" fill="currentColor"/><rect x="0" y="7" width="8" height="1" fill="currentColor"/></svg></div>
-        <div class="game-obstacle" id="go1" data-between="3"><svg viewBox="0 0 8 8" shape-rendering="crispEdges"><rect x="3" y="4" width="2" height="1" fill="currentColor"/><rect x="2" y="5" width="4" height="1" fill="currentColor"/><rect x="1" y="6" width="6" height="1" fill="currentColor"/><rect x="0" y="7" width="8" height="1" fill="currentColor"/></svg></div>
-        <div class="game-obstacle" id="go2" data-between="5"><svg viewBox="0 0 8 8" shape-rendering="crispEdges"><rect x="3" y="4" width="2" height="1" fill="currentColor"/><rect x="2" y="5" width="4" height="1" fill="currentColor"/><rect x="1" y="6" width="6" height="1" fill="currentColor"/><rect x="0" y="7" width="8" height="1" fill="currentColor"/></svg></div>
+        <div class="game-obstacle" id="go0" data-between="2"><svg viewBox="0 0 8 8" shape-rendering="crispEdges"><rect x="3" y="4" width="2" height="1" fill="currentColor"/><rect x="2" y="5" width="4" height="1" fill="currentColor"/><rect x="1" y="6" width="6" height="1" fill="currentColor"/><rect x="0" y="7" width="8" height="1" fill="currentColor"/></svg></div>
+        <div class="game-obstacle" id="go1" data-between="4"><svg viewBox="0 0 8 8" shape-rendering="crispEdges"><rect x="3" y="4" width="2" height="1" fill="currentColor"/><rect x="2" y="5" width="4" height="1" fill="currentColor"/><rect x="1" y="6" width="6" height="1" fill="currentColor"/><rect x="0" y="7" width="8" height="1" fill="currentColor"/></svg></div>
+        <div class="game-obstacle" id="go2" data-between="6"><svg viewBox="0 0 8 8" shape-rendering="crispEdges"><rect x="3" y="4" width="2" height="1" fill="currentColor"/><rect x="2" y="5" width="4" height="1" fill="currentColor"/><rect x="1" y="6" width="6" height="1" fill="currentColor"/><rect x="0" y="7" width="8" height="1" fill="currentColor"/></svg></div>
+
+        <button type="button" class="game-node" data-year="2009" data-title="EL SALVADOR" data-desc="Le mie origini — nel 2009 sono partito da El Salvador, da solo e senza famiglia: il primo passo di questo percorso.">
+          <div class="node-icon"><svg viewBox="0 0 8 8" shape-rendering="crispEdges"><rect x="3" y="0" width="1" height="6" fill="currentColor"/><rect x="4" y="1" width="3" height="2" fill="currentColor"/><rect x="2" y="6" width="3" height="1" fill="currentColor"/></svg></div>
+          <div class="node-year">2009</div>
+          <div class="node-title">EL SALVADOR</div>
+        </button>
 
         <button type="button" class="game-node" data-year="2009–11" data-title="GERMANIA" data-desc="Ragazzo alla pari — ho imparato il tedesco insieme a un bambino di due anni, e soprattutto il valore della parola data e della puntualità.">
           <div class="node-icon"><svg viewBox="0 0 8 8" shape-rendering="crispEdges"><rect x="3" y="2" width="2" height="1" fill="currentColor"/><rect x="2" y="3" width="4" height="2" fill="currentColor"/><rect x="3" y="5" width="2" height="1" fill="currentColor"/><rect x="3" y="6" width="1" height="1" fill="currentColor"/></svg></div>
@@ -1090,6 +1120,7 @@
   var player = document.getElementById('gplayer');
   var flip = document.getElementById('gflip');
   var bounce = document.getElementById('gbounce');
+  var progressTrail = document.getElementById('gprogress');
   var nodes = Array.prototype.slice.call(track.querySelectorAll('.game-node'));
   var obstacles = Array.prototype.slice.call(track.querySelectorAll('.game-obstacle'));
   var progressEl = document.getElementById('gp');
@@ -1158,6 +1189,7 @@
     player.style.transform = 'translateY(' + (-playerY) + 'px)';
     if (facing === -1) flip.classList.add('face-left');
     else if (facing === 1) flip.classList.remove('face-left');
+    progressTrail.style.width = Math.max(0, playerX - 24) + 'px';
   }
 
   function stumble() {
