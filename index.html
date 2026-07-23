@@ -242,6 +242,26 @@
   @media (prefers-reduced-motion: reduce) {
     .stat-bar-fill { transition: none; }
   }
+  .stat-tile.inline {
+    background: none; border: none; box-shadow: none; padding: 12px 0 0; margin-top: 4px;
+  }
+  .stat-tile.inline:hover { transform: none; box-shadow: none; border: none; }
+
+  .study-cycle {
+    position: relative; height: 1.3em; margin: 2px 0 4px;
+    font-size: 0.88rem; color: var(--ink-soft); overflow: hidden;
+  }
+  .study-cycle-item {
+    position: absolute; left: 0; top: 0; opacity: 0;
+    transition: opacity 0.5s ease; white-space: nowrap;
+  }
+  .study-cycle-item.active { opacity: 1; }
+  @media (prefers-reduced-motion: reduce) {
+    .study-cycle { height: auto; overflow: visible; }
+    .study-cycle-item {
+      position: static; opacity: 1; display: block; transition: none; margin-bottom: 2px;
+    }
+  }
 
   ul.achievements li,
   .cert-row,
@@ -931,11 +951,21 @@
             <svg viewBox="0 0 8 8" shape-rendering="crispEdges"><rect x="0" y="1" width="8" height="5" fill="currentColor"/><rect x="1" y="7" width="1" height="1" fill="currentColor"/><rect x="2" y="6" width="1" height="1" fill="currentColor"/></svg>
           </div>
           <div class="showcase-title">Come studio con l'AI</div>
+          <div class="study-cycle" aria-hidden="true">
+            <span class="study-cycle-item active">📚 Libri di finanza</span>
+            <span class="study-cycle-item">🇯🇵 Giapponese</span>
+            <span class="study-cycle-item">📰 Fisco quotidiano</span>
+          </div>
           <div class="showcase-mock">
             <div class="showcase-line you">Tu: ho capito che le doppie imposizioni si evitano perché Italia e Germania hanno una convenzione che assegna a un solo paese il diritto di tassare lo stesso reddito. Ho capito bene?</div>
             <div class="showcase-line ai"><b>Claude:</b> il principio è giusto, ma occhio a un dettaglio: spesso non è "tassa solo un paese", è "un paese tassa e l'altro concede un credito d'imposta" per neutralizzare la doppia tassazione. Vuoi vedere la differenza con un esempio numerico?</div>
           </div>
-          <div class="showcase-desc">Un esempio del tipo di domande che mi faccio fare — la stessa abitudine la uso ogni giorno anche per il giapponese.</div>
+          <div class="showcase-desc">Un esempio del tipo di domande che mi faccio fare — la stessa abitudine la uso ogni giorno anche per il giapponese e per restare aggiornato sul fisco.</div>
+          <div class="stat-tile inline" data-target="3">
+            <div class="stat-number">0</div>
+            <div class="stat-bar"><div class="stat-bar-fill"></div></div>
+            <div class="stat-label">abitudini di apprendimento quotidiano con l'AI</div>
+          </div>
         </div>
       </div>
     </section>
@@ -1510,6 +1540,20 @@
     });
   }, { threshold: 0.4 });
   tiles.forEach(function (t) { obs.observe(t); });
+})();
+</script>
+
+<script>
+(function () {
+  var items = document.querySelectorAll('.study-cycle-item');
+  if (items.length < 2) return;
+  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var idx = 0;
+  setInterval(function () {
+    items[idx].classList.remove('active');
+    idx = (idx + 1) % items.length;
+    items[idx].classList.add('active');
+  }, 2600);
 })();
 </script>
 
